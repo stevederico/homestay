@@ -57,13 +57,13 @@ export default function DetailView() {
       <div className="p-4 bg-background">
         {/* Photo Gallery */}
         {details.photos && details.photos.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="flex flex-row overflow-x-auto gap-4 mb-6 w-full">
             {details.photos.map((photo, index) => (
               <img
                 key={index}
                 src={photo}
                 alt={`${details.title} ${index + 1}`}
-                className="w-full h-64 object-cover rounded-lg shadow-md"
+                className="h-128 object-cover rounded-lg shadow-md"
               />
             ))}
           </div>
@@ -72,7 +72,7 @@ export default function DetailView() {
         {/* Main Info */}
         <div className="flex flex-col md:flex-row justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold mb-2">{details.title}</h1>
+            <h1 className="text-4xl font-light mb-2">{details.title}</h1>
             <p className="text-lg mb-2">{details.location}</p>
             <p className="mb-2">{details.bedrooms} Bedroom(s) | {details.bathrooms} Bathroom(s) | {details.squareFootage} sq ft</p>
           </div>

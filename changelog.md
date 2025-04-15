@@ -19,7 +19,10 @@ basic index page
 0.0.2
 added basic reserve function
 0.0.3
-- fix gallery
+photo gallery
+- admin page
+    - edit listing
+    - add listing
 
 
 Detail Page
