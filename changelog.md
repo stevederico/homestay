@@ -20,6 +20,7 @@ basic index page
 added basic reserve function
 0.0.3
 photo gallery
+- availability
 - admin page
     - edit listing
     - add listing
