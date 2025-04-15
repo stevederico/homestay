@@ -14,6 +14,12 @@ update config.json
 add router
 create new database
 0.0.1
+basic detail page
+basic index page
+0.0.2
+added basic reserve function
+0.0.3
+- fix gallery
 
 
 Detail Page
