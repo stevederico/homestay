@@ -1,7 +1,7 @@
 {
     "appName": "Rental",
     "appIcon": "house",
-    "tagline": "Rent from Owner",
+    "tagline": "Stay Without Fees",
     "backendURL": "https://bob.bixbyapps.com",
     "devBackendURL": "http://localhost:3000",
     "pages": [
