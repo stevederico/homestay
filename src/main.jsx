@@ -49,11 +49,16 @@ function isAuthenticated() {
 }
 
 const App = () => {
-  const location = useLocation();
+const location = useLocation();
   const navigate = useNavigate();
   const { state, dispatch } = getState();
 
   useEffect(() => {
+    const html = document.documentElement;
+    if (!location.pathname.toLowerCase().includes('app')) {
+      document.body.classList.remove('dark');
+      html.classList.remove('dark');
+    }
     document.title = constants.appName;
     const appStart = async () => {
       if (!location.pathname.toLowerCase().includes('app')) {
