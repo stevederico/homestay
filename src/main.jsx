@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   Navigate,
-  Outlet,
   useNavigate,
   useLocation,
 } from 'react-router-dom';
@@ -15,10 +14,12 @@ import LandingView from '@stevederico/skateboard-ui/LandingView';
 import TextView from '@stevederico/skateboard-ui/TextView';
 import SignUpView from '@stevederico/skateboard-ui/SignUpView';
 import SignInView from '@stevederico/skateboard-ui/SignInView';
-import StripeView from '@stevederico/skateboard-ui/StripeView';
+import PaymentView from '@stevederico/skateboard-ui/PaymentView';
 import SettingsView from '@stevederico/skateboard-ui/SettingsView';
+import SignOutView from '@stevederico/skateboard-ui/SignOutView';
 import NotFound from '@stevederico/skateboard-ui/NotFound';
-import { getCurrentUser } from '@stevederico/skateboard-ui/Utilities';
+import ProtectedRoute from '@stevederico/skateboard-ui/ProtectedRoute';
+import { useAppSetup } from '@stevederico/skateboard-ui/Utilities';
 import { ContextProvider, getState } from './context.jsx';
 import constants from './constants.json';
 
@@ -26,61 +27,16 @@ import HomeView from './components/HomeView.jsx'
 import OtherView from './components/OtherView.jsx'
 import DetailView from './components/DetailView.jsx'
 
-const ProtectedRoute = () => {
-  const auth = isAuthenticated();
-  return auth ? <Outlet /> : <Navigate to="/signin" replace />;
-};
-
-function isAuthenticated() {
-  // Check client-side noLogin flag first
-  if (constants.noLogin === true) {
-    return true;
-  }
-  // Otherwise check for valid auth token
-  try {
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('token='))
-      ?.split('=')[1];
-    return Boolean(token);
-  } catch (e) {
-    return false;
-  }
-}
-
 const App = () => {
-const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
-  const { state, dispatch } = getState();
+  const { dispatch } = getState();
 
   useEffect(() => {
-    const html = document.documentElement;
-    if (!location.pathname.toLowerCase().includes('app')) {
-      document.body.classList.remove('dark');
-      html.classList.remove('dark');
-    }
     document.title = constants.appName;
-    const appStart = async () => {
-      if (!location.pathname.toLowerCase().includes('app')) {
-        return;
-      }
+  }, []);
 
-      // Always try to fetch user data regardless of noLogin // The server will allow the request through if noLogin is enabled on its side
-      try {
-        const data = await getCurrentUser();
-        if (data) {
-          dispatch({ type: 'SET_USER', payload: data });
-        }
-      } catch (error) {
-        console.error('Failed to fetch user:', error);
-        if (!constants.noLogin) {
-          navigate('/signin');
-        }
-      }
-    };
-
-    appStart();
-  }, [location.pathname, navigate, dispatch]);
+  useAppSetup(location, navigate, dispatch);
 
   return (
     <Routes>
@@ -92,12 +48,13 @@ const location = useLocation();
               <Route path="r/:id" element={<DetailView />} />
               <Route path="other" element={<OtherView />} />
               <Route path="settings" element={<SettingsView />} />
-              <Route path="stripe" element={<StripeView />} />
+              <Route path="payment" element={<PaymentView />} />
         </Route>
       </Route>
       <Route path="/" element={<LandingView />} />
       <Route path="/signin" element={<SignInView />} />
       <Route path="/signup" element={<SignUpView />} />
+      <Route path="/signout" element={<SignOutView />} />
       <Route
         path="/terms"
         element={<TextView details={constants.termsOfService} />}

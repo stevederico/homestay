@@ -1,6 +1,7 @@
 import Header from '@stevederico/skateboard-ui/Header';
 import { useEffect, useState, useRef } from "react";
-import { getBackendURL, getCookie, timestampToString, isSubscriber } from '@stevederico/skateboard-ui/Utilities';
+import { getBackendURL, timestampToString, isSubscriber } from '@stevederico/skateboard-ui/Utilities';
+import constants from '@/constants.json';
 
 export default function HomeView() {
   const [objects, setObjects] = useState([]);
@@ -13,9 +14,9 @@ export default function HomeView() {
   async function getData(){
     await fetch(`${getBackendURL()}/listings`, {
       method: 'GET',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getCookie('token')}`,
       }
     }).then((response) => {
       if (response.status === 200) {

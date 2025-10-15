@@ -25,6 +25,15 @@ photo gallery
     - edit listing
     - add listing
 
+0.0.4
+
+  Migrate to Skateboard 0.9.8
+  Add tailwindcss-animate plugin
+  Remove duplicate getCSRFToken
+  Fix index.html scrolling
+  Update vite.config plugins
+  Clean styles.css colors
+
 
 Detail Page
 - Photo Gallery

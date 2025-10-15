@@ -1,7 +1,8 @@
 import Header from '@stevederico/skateboard-ui/Header';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
-import { getBackendURL, getCookie, timestampToString, isSubscriber } from '@stevederico/skateboard-ui/Utilities';
+import { getBackendURL, timestampToString, isSubscriber } from '@stevederico/skateboard-ui/Utilities';
+import constants from '@/constants.json';
 
 export default function DetailView() {
   const { id } = useParams();
@@ -31,9 +32,9 @@ export default function DetailView() {
   async function getData(){
     await fetch(`${getBackendURL()}/listings/${id}`, {
       method: 'GET',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getCookie('token')}`,
       }
     }).then((response) => {
       if (response.status === 200) {
