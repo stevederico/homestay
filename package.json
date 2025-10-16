@@ -1,7 +1,7 @@
 {
   "name": "bxrental",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "serve": "vite --force --mode development",
@@ -10,7 +10,7 @@
     "prod": "vite build --mode production; cp -r ./dist/* ../bixby-proxy/public/rental.bixbyapps.com"
   },
   "dependencies": {
-    "@stevederico/skateboard-ui": "0.9.8",
+    "@stevederico/skateboard-ui": "1.0.9",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
@@ -18,8 +18,8 @@
     "vite": "^7.1.10"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.1.5",
-    "@vitejs/plugin-react-swc": "^3.9.0",
-    "tailwindcss": "4.1.6"
+    "@tailwindcss/vite": "^4.1.14",
+    "@vitejs/plugin-react-swc": "^4.1.0",
+    "tailwindcss": "4.1.14"
   }
 }

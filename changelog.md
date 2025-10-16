@@ -25,6 +25,13 @@ photo gallery
     - edit listing
     - add listing
 
+0.1.0
+
+  Update dependencies
+  Remove context.jsx
+  Update vite configuration
+  Update styles
+
 0.0.4
 
   Migrate to Skateboard 0.9.8
