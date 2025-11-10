@@ -10,7 +10,7 @@
     "prod": "vite build --mode production; cp -r ./dist/* ../bixby-proxy/public/rental.bixbyapps.com"
   },
   "dependencies": {
-    "@stevederico/skateboard-ui": "1.0.9",
+    "@stevederico/skateboard-ui": "1.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
