@@ -3,6 +3,7 @@ import DynamicIcon from '@stevederico/skateboard-ui/DynamicIcon';
 import { useEffect, useState } from "react";
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { Link } from 'react-router-dom';
+import { trackEvent } from '../utils/analytics';
 
 /**
  * Home view component displaying rental listings grid with search
@@ -24,13 +25,17 @@ export default function HomeView() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    trackEvent('page-viewed', { page: 'home' });
+
     const fetchListings = async () => {
       try {
         const data = await apiRequest('/listings');
         setListings(data);
         setFilteredListings(data);
+        trackEvent('listings-loaded', { count: data.length });
       } catch (err) {
         setError(err.message);
+        trackEvent('listings-load-failed', { error: err.message });
       } finally {
         setLoading(false);
       }
@@ -50,7 +55,31 @@ export default function HomeView() {
       listing.summary?.toLowerCase().includes(query)
     );
     setFilteredListings(filtered);
+
+    // Track search after debounce
+    const timer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        trackEvent('search-performed', {
+          query: searchQuery.substring(0, 100),
+          resultsCount: filtered.length
+        });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
   }, [searchQuery, listings]);
+
+  /**
+   * Handle listing card click for analytics
+   * @param {Object} listing - Listing object
+   */
+  const handleListingClick = (listing) => {
+    trackEvent('listing-clicked', {
+      listingId: listing._id,
+      title: listing.title?.substring(0, 100),
+      price: listing.price,
+      location: listing.location?.substring(0, 100)
+    });
+  };
 
   /**
    * Format price for display
@@ -102,6 +131,7 @@ export default function HomeView() {
                 <Link
                   key={listing._id}
                   to={`/app/r/${listing._id}`}
+                  onClick={() => handleListingClick(listing)}
                   className="group bg-accent rounded-xl overflow-hidden hover:shadow-lg transition-all"
                 >
                   {/* Image */}

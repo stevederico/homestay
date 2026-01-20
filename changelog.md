@@ -1,5 +1,12 @@
 ## CHANGELOG
 
+1.2.4
+
+  Add Umami analytics
+  Add analytics utility
+  Update CSP headers
+  Add event tracking
+
 1.2.3
 
   Add Railway deployment

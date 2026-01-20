@@ -1,8 +1,9 @@
 import Header from '@stevederico/skateboard-ui/Header';
 import DynamicIcon from '@stevederico/skateboard-ui/DynamicIcon';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
+import { trackEvent } from '../utils/analytics';
 
 /**
  * Detail view component for individual rental listing
@@ -29,19 +30,42 @@ export default function DetailView() {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [nights, setNights] = useState(0);
+  const viewStartTime = useRef(Date.now());
 
   useEffect(() => {
+    trackEvent('page-viewed', { page: 'detail', listingId: id });
+    viewStartTime.current = Date.now();
+
     const fetchListing = async () => {
       try {
         const data = await apiRequest(`/listings/${id}`);
         setListing(data);
+        trackEvent('listing-viewed', {
+          listingId: id,
+          title: data.title?.substring(0, 100),
+          price: data.price,
+          location: data.location?.substring(0, 100),
+          bedrooms: data.bedrooms,
+          bathrooms: data.bathrooms
+        });
       } catch (err) {
         setError(err.message);
+        trackEvent('listing-view-failed', { listingId: id, error: err.message });
       } finally {
         setLoading(false);
       }
     };
     fetchListing();
+
+    // Track view duration on unmount
+    return () => {
+      const duration = Date.now() - viewStartTime.current;
+      trackEvent('listing-view-duration', {
+        listingId: id,
+        durationMs: duration,
+        durationSec: Math.round(duration / 1000)
+      });
+    };
   }, [id]);
 
   useEffect(() => {
@@ -50,10 +74,18 @@ export default function DetailView() {
       const end = new Date(checkOut);
       const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
       setNights(diff > 0 ? diff : 0);
+
+      if (diff > 0) {
+        trackEvent('dates-selected', {
+          listingId: id,
+          nights: diff,
+          totalPrice: listing?.price ? listing.price * diff : 0
+        });
+      }
     } else {
       setNights(0);
     }
-  }, [checkIn, checkOut]);
+  }, [checkIn, checkOut, id, listing?.price]);
 
   /**
    * Format price for display
@@ -70,14 +102,44 @@ export default function DetailView() {
    */
   const handleReserve = () => {
     if (!checkIn || !checkOut) {
+      trackEvent('reserve-validation-failed', {
+        listingId: id,
+        reason: 'missing-dates'
+      });
       alert('Please select check-in and check-out dates');
       return;
     }
     if (nights <= 0) {
+      trackEvent('reserve-validation-failed', {
+        listingId: id,
+        reason: 'invalid-dates'
+      });
       alert('Check-out must be after check-in');
       return;
     }
-    alert(`Booking request submitted for ${nights} nights. Total: ${formatPrice(listing.price * nights)}`);
+
+    const totalPrice = listing.price * nights;
+    trackEvent('reserve-clicked', {
+      listingId: id,
+      title: listing.title?.substring(0, 100),
+      nights: nights,
+      pricePerNight: listing.price,
+      totalPrice: totalPrice,
+      checkIn: checkIn,
+      checkOut: checkOut
+    });
+
+    alert(`Booking request submitted for ${nights} nights. Total: ${formatPrice(totalPrice)}`);
+  };
+
+  /**
+   * Handle host contact click
+   */
+  const handleHostContact = (method) => {
+    trackEvent('host-contacted', {
+      listingId: id,
+      method: method
+    });
   };
 
   if (loading) {
@@ -233,7 +295,11 @@ export default function DetailView() {
                 <div>
                   <p className="font-medium">{listing.host.name}</p>
                   {listing.host.email && (
-                    <a href={`mailto:${listing.host.email}`} className="text-sm text-app">
+                    <a
+                      href={`mailto:${listing.host.email}`}
+                      onClick={() => handleHostContact('email')}
+                      className="text-sm text-app"
+                    >
                       {listing.host.email}
                     </a>
                   )}
