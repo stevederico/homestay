@@ -1,5 +1,13 @@
 ## CHANGELOG
 
+1.2.3
+
+  Add Railway deployment
+  Add railway.json
+  Add .dockerignore
+  Fix Dockerfile Alpine
+  Fix crypto node prefix
+
 1.2.2
 
   Enable login authentication

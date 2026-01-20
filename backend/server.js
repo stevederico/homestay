@@ -8,7 +8,7 @@ import { cors } from 'hono/cors'
 import Stripe from "stripe";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 import { databaseManager } from "./adapters/manager.js";
 import { dirname, resolve } from 'node:path';
