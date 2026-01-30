@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.2.5
+
+  Update Dockerfile node:22-alpine
+
 1.2.4
 
   Add Umami analytics

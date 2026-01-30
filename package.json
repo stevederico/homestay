@@ -1,7 +1,7 @@
 {
   "name": "BXRental",
   "private": false,
-  "version": "1.2.4",
+  "version": "1.2.5",
   "skateboardVersion": "1.2.1",
   "type": "module",
   "workspaces": [
