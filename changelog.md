@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.3.0
+
+  Add analytics data-domains
+
 1.2.5
 
   Update Dockerfile node:22-alpine
