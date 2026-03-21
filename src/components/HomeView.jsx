@@ -25,8 +25,6 @@ export default function HomeView() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    trackEvent('page-viewed', { page: 'home' });
-
     const fetchListings = async () => {
       try {
         const data = await apiRequest('/listings');
@@ -97,7 +95,7 @@ export default function HomeView() {
 
       <div className="flex flex-col h-screen bg-background">
         {/* Search */}
-        <div className="p-4 border-b bg-background">
+        <div data-section-id="search-bar" className="p-4 border-b bg-background">
           <div className="relative">
             <DynamicIcon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -105,6 +103,7 @@ export default function HomeView() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search rentals..."
+              data-umami-event="search-input-focused"
               className="w-full pl-11 pr-4 py-3 bg-accent border-0 rounded-full focus:outline-none focus:ring-2 focus:ring-app"
             />
           </div>
@@ -126,12 +125,13 @@ export default function HomeView() {
               <p>{searchQuery ? 'No rentals match your search' : 'No rentals available'}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div data-section-id="listings-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredListings.map((listing) => (
                 <Link
                   key={listing._id}
                   to={`/app/r/${listing._id}`}
                   onClick={() => handleListingClick(listing)}
+                  data-umami-event="listing-card-clicked"
                   className="group bg-accent rounded-xl overflow-hidden hover:shadow-lg transition-all"
                 >
                   {/* Image */}

@@ -33,7 +33,6 @@ export default function DetailView() {
   const viewStartTime = useRef(Date.now());
 
   useEffect(() => {
-    trackEvent('page-viewed', { page: 'detail', listingId: id });
     viewStartTime.current = Date.now();
 
     const fetchListing = async () => {
@@ -162,6 +161,7 @@ export default function DetailView() {
           <p className="text-red-500">{error || 'Listing not found'}</p>
           <button
             onClick={() => navigate('/app/home')}
+            data-umami-event="back-to-listings-clicked"
             className="mt-4 px-4 py-2 bg-app text-white rounded-lg"
           >
             Back to Listings
@@ -177,7 +177,7 @@ export default function DetailView() {
 
       <div className="flex flex-col bg-background pb-24">
         {/* Photo Gallery */}
-        <div className="overflow-x-auto">
+        <div data-section-id="photo-gallery" className="overflow-x-auto">
           <div className="flex gap-2 p-4 min-w-max">
             {listing.photos?.length > 0 ? (
               listing.photos.map((photo, index) => (
@@ -198,7 +198,7 @@ export default function DetailView() {
         </div>
 
         {/* Main Content */}
-        <div className="p-4 space-y-6">
+        <div data-section-id="listing-details" className="p-4 space-y-6">
           {/* Title & Location */}
           <div>
             <h1 className="text-2xl font-bold">{listing.title}</h1>
@@ -298,6 +298,7 @@ export default function DetailView() {
                     <a
                       href={`mailto:${listing.host.email}`}
                       onClick={() => handleHostContact('email')}
+                      data-umami-event="host-email-clicked"
                       className="text-sm text-app"
                     >
                       {listing.host.email}
@@ -314,7 +315,7 @@ export default function DetailView() {
       </div>
 
       {/* Fixed Bottom Booking Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-accent p-4 safe-area-pb">
+      <div data-section-id="booking-section" className="fixed bottom-0 left-0 right-0 bg-background border-t border-accent p-4 safe-area-pb">
         <div className="max-w-2xl mx-auto">
           {/* Date Inputs */}
           <div className="flex gap-2 mb-3">
@@ -325,6 +326,7 @@ export default function DetailView() {
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
+                data-umami-event="checkin-date-selected"
                 className="w-full px-3 py-2 bg-accent rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-app"
               />
             </div>
@@ -335,6 +337,7 @@ export default function DetailView() {
                 value={checkOut}
                 onChange={(e) => setCheckOut(e.target.value)}
                 min={checkIn || new Date().toISOString().split('T')[0]}
+                data-umami-event="checkout-date-selected"
                 className="w-full px-3 py-2 bg-accent rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-app"
               />
             </div>
@@ -355,6 +358,7 @@ export default function DetailView() {
             </div>
             <button
               onClick={handleReserve}
+              data-umami-event="reserve-clicked"
               className="px-6 py-3 bg-app text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
             >
               Reserve
