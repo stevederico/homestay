@@ -362,7 +362,7 @@ app.use('*', async (c, next) => {
 app.use('*', secureHeaders({
   contentSecurityPolicy: {
     defaultSrc: ["'self'"],
-    scriptSrc: ["'self'", "'unsafe-inline'", "https://aob.bixbyapps.com"],
+    scriptSrc: ["'self'", "'unsafe-inline'", "https://aob.bixbyapps.com", "https://static.cloudflareinsights.com"],
     styleSrc: ["'self'", "'unsafe-inline'"],
     imgSrc: ["'self'", "https:", "data:"],
     fontSrc: ["'self'"],
