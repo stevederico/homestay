@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+1.4.0
+
+  Add advanced analytics tracking
+  Add AnalyticsProvider wrapper
+  Add localhost analytics guard
+
 1.3.0
 
   Add analytics data-domains

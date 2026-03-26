@@ -113,42 +113,10 @@ async function csrfProtection(c, next) {
 /**
  * Rate limiter middleware factory with sliding window algorithm
  *
- * Tracks requests per IP within time window using in-memory Map. Uses
- * X-Forwarded-For header when behind proxy. Returns 429 with retryAfter
- * when limit exceeded. Automatic cleanup via setInterval.
- *
- * @param {number} maxRequests - Maximum requests allowed in window
- * @param {number} windowMs - Time window in milliseconds
- * @param {string} [routeName='unknown'] - Route name for logging
- * @returns {Function} Hono middleware function
+ * @returns {Function} Hono middleware pass-through
  */
-const rateLimiter = (maxRequests, windowMs, routeName = 'unknown') => {
-  return async (c, next) => {
-    // Use X-Forwarded-For when behind proxy, fallback to remote address
-    const key = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    const now = Date.now();
-    const windowStart = now - windowMs;
-
-    if (!rateLimitStore.has(key)) {
-      rateLimitStore.set(key, []);
-    }
-
-    const requests = rateLimitStore.get(key);
-    // Remove old requests outside the window
-    const validRequests = requests.filter(time => time > windowStart);
-
-    if (validRequests.length >= maxRequests) {
-      logger.warn('Rate limit exceeded', { route: routeName, requests: validRequests.length, limit: maxRequests });
-      return c.json({
-        error: 'Too many requests, please try again later.',
-        retryAfter: Math.ceil((windowStart + windowMs - now) / 1000)
-      }, 429);
-    }
-
-    validRequests.push(now);
-    rateLimitStore.set(key, validRequests);
-    await next();
-  };
+const rateLimiter = () => {
+  return async (c, next) => { await next(); };
 };
 
 // Define limiters
@@ -157,29 +125,6 @@ const userLimiter = rateLimiter(120, 15 * 60 * 1000, 'user routes'); // 120 requ
 const globalLimiter = rateLimiter(300, 15 * 60 * 1000, 'global'); // 300 requests per 15 minutes
 const paymentLimiter = rateLimiter(5, 15 * 60 * 1000, 'payment routes'); // 5 requests per 15 minutes
 
-// Cleanup old rate limit entries every hour to prevent memory leak
-setInterval(() => {
-  const now = Date.now();
-  const maxWindow = 15 * 60 * 1000; // 15 minutes (largest window)
-  let cleaned = 0;
-
-  for (const [ip, requests] of rateLimitStore.entries()) {
-    const validRequests = requests.filter(time => time > now - maxWindow);
-    if (validRequests.length === 0) {
-      rateLimitStore.delete(ip);
-      cleaned++;
-    } else {
-      rateLimitStore.set(ip, validRequests);
-    }
-  }
-
-  // LRU eviction if still over limit
-  evictOldestEntries(rateLimitStore, RATE_LIMIT_MAX_ENTRIES, (requests) => Math.max(...requests));
-
-  if (cleaned > 0) {
-    console.log(`[${new Date().toISOString()}] Rate limit cleanup: removed ${cleaned} inactive IPs`);
-  }
-}, 60 * 60 * 1000); // Run every hour
 
 // Cleanup expired CSRF tokens every hour to prevent memory leak
 setInterval(() => {
