@@ -6,7 +6,7 @@ import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { trackEvent } from '../utils/analytics';
 
 /**
- * Detail view component for individual rental listing
+ * Detail view component for individual stay listing
  *
  * Features:
  * - Photo gallery with horizontal scroll
@@ -15,7 +15,7 @@ import { trackEvent } from '../utils/analytics';
  * - Check-in/check-out date inputs
  * - Reserve button
  * - Amenities list
- * - Policies (rental, cancellation, house rules)
+ * - Policies (stay, cancellation, house rules)
  * - Host contact info
  *
  * @component
@@ -264,10 +264,10 @@ export default function DetailView() {
 
           {/* Policies */}
           <div className="space-y-4">
-            {listing.rentalPolicy && (
+            {listing.stayPolicy && (
               <div>
-                <h2 className="text-lg font-semibold mb-2">Rental Policy</h2>
-                <p className="text-muted-foreground text-sm">{listing.rentalPolicy}</p>
+                <h2 className="text-lg font-semibold mb-2">Stay Policy</h2>
+                <p className="text-muted-foreground text-sm">{listing.stayPolicy}</p>
               </div>
             )}
             {listing.cancellationPolicy && (

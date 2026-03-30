@@ -1,8 +1,8 @@
-# BXRental
+# BXStay
 
-Rental property management application.
+Stay property management application.
 
-**Version:** 1.2.5 | **Domain:** [rental.bixbyapps.com](https://rental.bixbyapps.com) | **Railway Service:** `bxrental`
+**Version:** 1.2.5 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com) | **Railway Service:** `bxstay`
 
 ## Tech Stack
 
@@ -31,6 +31,6 @@ deno run start    # Frontend :5173 + Backend :8000
 ## Deploy
 
 ```bash
-railway link -p bixby -e production -s bxrental
+railway link -p bixby -e production -s bxstay
 railway up
 ```

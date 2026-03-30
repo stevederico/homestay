@@ -3,7 +3,7 @@
  *
  * Configures routing and initializes app with skateboard-ui framework.
  * Routes:
- * - /app/home - Rental listings grid with search
+ * - /app/home - Stay listings grid with search
  * - /app/r/:id - Individual listing detail page
  *
  * @see {@link https://github.com/stevederico/skateboard|Skateboard Docs}

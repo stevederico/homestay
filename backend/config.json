@@ -1,7 +1,7 @@
 {
   "staticDir": "../dist",
   "database": {
-    "db": "BXRental",
+    "db": "BXStay",
     "dbType": "mongodb",
     "connectionString": "${MONGODB_URL}"
   }

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { trackEvent } from '../utils/analytics';
 
 /**
- * Home view component displaying rental listings grid with search
+ * Home view component displaying stay listings grid with search
  *
  * Features:
  * - Fetches listings from /listings endpoint
@@ -91,7 +91,7 @@ export default function HomeView() {
 
   return (
     <>
-      <Header title="Rentals" />
+      <Header title="Stays" />
 
       <div className="flex flex-col h-screen bg-background">
         {/* Search */}
@@ -102,7 +102,7 @@ export default function HomeView() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search rentals..."
+              placeholder="Search stays..."
               data-umami-event="search-input-focused"
               className="w-full pl-11 pr-4 py-3 bg-accent border-0 rounded-full focus:outline-none focus:ring-2 focus:ring-app"
             />
@@ -122,7 +122,7 @@ export default function HomeView() {
           ) : filteredListings.length === 0 ? (
             <div className="text-center py-8 opacity-60">
               <DynamicIcon name="home" size={48} className="mx-auto mb-4 opacity-40" />
-              <p>{searchQuery ? 'No rentals match your search' : 'No rentals available'}</p>
+              <p>{searchQuery ? 'No stays match your search' : 'No stays available'}</p>
             </div>
           ) : (
             <div data-section-id="listings-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

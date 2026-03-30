@@ -24,4 +24,4 @@ Allow: /
 User-agent: CCBot
 Disallow: /
 
-Sitemap: https://rental.bixbyapps.com/sitemap.xml
+Sitemap: https://stay.bixbyapps.com/sitemap.xml
