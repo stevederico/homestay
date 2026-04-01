@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.5.0
+
+  Rebrand rental to stay
+
 1.4.0
 
   Add advanced analytics tracking
