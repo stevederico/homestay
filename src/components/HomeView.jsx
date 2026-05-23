@@ -2,7 +2,7 @@ import Header from '@stevederico/skateboard-ui/Header';
 import DynamicIcon from '@stevederico/skateboard-ui/DynamicIcon';
 import { useEffect, useState } from "react";
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { trackEvent } from '../utils/analytics';
 
 /**

@@ -1,5 +1,14 @@
 ## CHANGELOG
 
+1.6.0
+
+  Upgrade skateboard to 3.4.0 (skateboard-ui 3.7.0)
+  Migrate react-router-dom to react-router 7.15.0
+  Bump react 19.2.6, vite 8.0.13, tailwindcss 4.3.0
+  Drop unused deps (dnd-kit, react-table, lucide-react, recharts, sonner, zod, next-themes)
+  Remove use-sync-external-store shim plugin and src/shims/
+  Delete dead boilerplate (BlankView, ChatView)
+
 1.5.0
 
   Rebrand rental to stay
