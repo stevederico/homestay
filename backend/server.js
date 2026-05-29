@@ -826,10 +826,7 @@ app.post("/api/signin", authLimiter, async (c) => {
     if (needsRehash(auth.password)) {
       try {
         const newHash = await hashPassword(password);
-        await databaseManager.executeQuery(currentDbConfig.dbType, currentDbConfig.db, currentDbConfig.connectionString, {
-          query: 'UPDATE Auths SET password = ? WHERE email = ?',
-          params: [newHash, email]
-        });
+        await databaseManager.updateAuth(currentDbConfig.dbType, currentDbConfig.db, currentDbConfig.connectionString, { email }, { password: newHash });
         logger.debug('Password hash migrated to scrypt');
       } catch (e) {
         logger.warn('Password rehash failed', { error: e.message });
