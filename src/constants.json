@@ -19,17 +19,17 @@
         "title": "Why Choose BXStay",
         "items": [
             {
-                "icon": "\ud83c\udfe0",
+                "icon": "house",
                 "title": "Verified Properties",
                 "description": "All listings are verified for quality and accuracy"
             },
             {
-                "icon": "\ud83d\udccd",
+                "icon": "map-pin",
                 "title": "Prime Locations",
                 "description": "Properties in the most desirable destinations"
             },
             {
-                "icon": "\ud83d\udcac",
+                "icon": "headset",
                 "title": "24/7 Support",
                 "description": "Our team is available around the clock to assist you"
             }
