@@ -2,7 +2,7 @@
   "name": "BXStay",
   "private": false,
   "version": "1.6.0",
-  "skateboardVersion": "3.4.0",
+  "skateboardVersion": "3.5.0",
   "type": "module",
   "workspaces": [
     "backend"
