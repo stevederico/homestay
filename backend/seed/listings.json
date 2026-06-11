@@ -1,0 +1,340 @@
+[{
+  "_id": "507f1f77bcf86cd799439011",
+  "title": "Cozy Downtown Loft",
+  "description": "A modern loft in the heart of the city with great views and easy access to restaurants.",
+  "price": 120,
+  "location": "New York, NY",
+  "hostId": "507f1f77bcf86cd799439012",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/c2e67a95f2b08c6cef34da3962ca21df-cc_ft_1536.webp",
+    "https://photos.zillowstatic.com/fp/1950bef0b6cbb4597ecf0b77992f007d-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/6f6f4b17e9f41d4b383725e3b46276cf-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/d39fd9c4052be41c3e80b0572cfaa528-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/25bc3c10df4328e0fa455167a631fb0e-cc_ft_768.webp"
+  ],
+  "bedrooms": 1,
+  "bathrooms": 1,
+  "squareFootage": 800,
+  "address": "123 Main St, New York, NY 10001",
+  "amenities": [
+    "Wi-Fi",
+    "Air Conditioning",
+    "Kitchen",
+    "TV"
+  ],
+  "rentalPolicy": "Minimum stay: 2 nights. No pets allowed.",
+  "cancellationPolicy": "Flexible: Full refund up to 24 hours before check-in.",
+  "houseRules": "No smoking. Quiet hours after 10 PM.",
+  "contactInfo": {
+    "name": "John Doe",
+    "phone": "+1-555-123-4567",
+    "email": "john.doe@example.com",
+    "taxIdNumber": "123-45-6789"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439013",
+  "title": "Beachfront Cottage",
+  "description": "Charming cottage steps from the beach, perfect for a relaxing getaway.",
+  "price": 200,
+  "location": "Santa Monica, CA",
+  "hostId": "507f1f77bcf86cd799439014",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/c5f95c147a1bb5294761d60c83982eb9-cc_ft_1536.webp",
+    "https://photos.zillowstatic.com/fp/93f0649e94b2bda355053b19692d3f83-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/d828ec2c416071ae2603c8e62cf9d6c6-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/70c66ad06630863af3e35f21a29dc268-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/31d7767b2b8391f4ea72a7b7f317565a-cc_ft_768.webp"
+  ],
+  "bedrooms": 2,
+  "bathrooms": 1.5,
+  "squareFootage": 1200,
+  "address": "456 Ocean Ave, Santa Monica, CA 90401",
+  "amenities": [
+    "Wi-Fi",
+    "Beach Access",
+    "Outdoor Shower",
+    "BBQ Grill"
+  ],
+  "rentalPolicy": "Minimum stay: 3 nights. Pets allowed with approval.",
+  "cancellationPolicy": "Moderate: Full refund up to 5 days before check-in.",
+  "houseRules": "No parties. Clean up after pets.",
+  "contactInfo": {
+    "name": "Jane Smith",
+    "phone": "+1-555-987-6543",
+    "email": "jane.smith@example.com",
+    "taxIdNumber": "987-65-4321"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439015",
+  "title": "Rustic Mountain Cabin",
+  "description": "Secluded cabin surrounded by nature, ideal for hiking and stargazing.",
+  "price": 150,
+  "location": "Aspen, CO",
+  "hostId": "507f1f77bcf86cd799439016",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/1f1461c23d2f9b03c07193e3094a554e-cc_ft_1536.webp",
+    "https://photos.zillowstatic.com/fp/25ed7174c2f36c4b5c36cda43d60f767-cc_ft_768.webp",
+    "https://photos.zillowstatic.com/fp/3a128f93580e9793a1153fa4540b2202-cc_ft_1536.webp"
+  ],
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "squareFootage": 1500,
+  "address": "789 Pine Rd, Aspen, CO 81611",
+  "amenities": [
+    "Fireplace",
+    "Hot Tub",
+    "Wi-Fi",
+    "Hiking Trails"
+  ],
+  "rentalPolicy": "Minimum stay: 4 nights. No children under 12.",
+  "cancellationPolicy": "Strict: 50% refund up to 14 days before check-in.",
+  "houseRules": "No smoking. No open flames outside.",
+  "contactInfo": {
+    "name": "Mike Johnson",
+    "phone": "+1-555-456-7890",
+    "email": "mike.johnson@example.com",
+    "taxIdNumber": "456-78-9012"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439017",
+  "title": "Modern City Condo",
+  "description": "Sleek condo with floor-to-ceiling windows and a vibrant urban vibe.",
+  "price": 180,
+  "location": "Chicago, IL",
+  "hostId": "507f1f77bcf86cd799439018",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/5cbead8dfb74bb62d7a9ecf08faddd3e-cc_ft_1536.webp"
+  ],
+  "bedrooms": 2,
+  "bathrooms": 2,
+  "squareFootage": 1100,
+  "address": "789 State St, Chicago, IL 60605",
+  "amenities": [
+    "Wi-Fi",
+    "Gym",
+    "Rooftop Deck",
+    "Dishwasher"
+  ],
+  "rentalPolicy": "Minimum stay: 3 nights. No smoking.",
+  "cancellationPolicy": "Moderate: Full refund up to 5 days before check-in.",
+  "houseRules": "No parties. Respect neighbors.",
+  "contactInfo": {
+    "name": "Sarah Lee",
+    "phone": "+1-555-321-6543",
+    "email": "sarah.lee@example.com",
+    "taxIdNumber": "321-54-9876"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439019",
+  "title": "Historic Townhouse",
+  "description": "Charming 19th-century townhouse with original hardwood floors.",
+  "price": 250,
+  "location": "Boston, MA",
+  "hostId": "507f1f77bcf86cd799439020",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/2fead89d416b3686cced848ae686e0a6-cc_ft_1536.webp"
+  ],
+  "bedrooms": 3,
+  "bathrooms": 2.5,
+  "squareFootage": 1800,
+  "address": "456 Beacon St, Boston, MA 02116",
+  "amenities": [
+    "Fireplace",
+    "Wi-Fi",
+    "Backyard",
+    "Washer/Dryer"
+  ],
+  "rentalPolicy": "Minimum stay: 5 nights. Pets allowed with fee.",
+  "cancellationPolicy": "Strict: 50% refund up to 14 days before check-in.",
+  "houseRules": "No smoking. No loud music.",
+  "contactInfo": {
+    "name": "Emily Brown",
+    "phone": "+1-555-654-3210",
+    "email": "emily.brown@example.com",
+    "taxIdNumber": "654-32-1098"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439021",
+  "title": "Sunny Desert Retreat",
+  "description": "Spacious home with a private pool, perfect for a desert escape.",
+  "price": 220,
+  "location": "Phoenix, AZ",
+  "hostId": "507f1f77bcf86cd799439022",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/6cfc75dccb3c9f815cd8e186ac65cf15-sc_1920_1280.webp"
+  ],
+  "bedrooms": 4,
+  "bathrooms": 3,
+  "squareFootage": 2200,
+  "address": "123 Cactus Rd, Phoenix, AZ 85032",
+  "amenities": [
+    "Pool",
+    "Wi-Fi",
+    "BBQ Grill",
+    "Parking"
+  ],
+  "rentalPolicy": "Minimum stay: 4 nights. No pets.",
+  "cancellationPolicy": "Flexible: Full refund up to 24 hours before check-in.",
+  "houseRules": "No smoking. Pool safety rules apply.",
+  "contactInfo": {
+    "name": "David Martinez",
+    "phone": "+1-555-789-1234",
+    "email": "david.martinez@example.com",
+    "taxIdNumber": "789-12-3456"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439023",
+  "title": "Coastal Bungalow",
+  "description": "Quaint bungalow near the shore with a wraparound porch.",
+  "price": 190,
+  "location": "Portland, ME",
+  "hostId": "507f1f77bcf86cd799439024",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/59c0ed5552f8f395118a3017ea5d55fa-cc_ft_1536.webp"
+  ],
+  "bedrooms": 2,
+  "bathrooms": 1,
+  "squareFootage": 900,
+  "address": "321 Harbor Ln, Portland, ME 04101",
+  "amenities": [
+    "Wi-Fi",
+    "Porch",
+    "Bicycles",
+    "Beach Access"
+  ],
+  "rentalPolicy": "Minimum stay: 3 nights. Small pets allowed.",
+  "cancellationPolicy": "Moderate: Full refund up to 5 days before check-in.",
+  "houseRules": "No smoking. Clean up after pets.",
+  "contactInfo": {
+    "name": "Lisa Thompson",
+    "phone": "+1-555-456-7891",
+    "email": "lisa.thompson@example.com",
+    "taxIdNumber": "456-78-1234"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439025",
+  "title": "Luxury Lake House",
+  "description": "Stunning lakefront home with a private dock and hot tub.",
+  "price": 350,
+  "location": "Austin, TX",
+  "hostId": "507f1f77bcf86cd799439026",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/8bf47601f3c3d934e997d8cd92f35a01-cc_ft_1536.webp"
+  ],
+  "bedrooms": 5,
+  "bathrooms": 4,
+  "squareFootage": 3000,
+  "address": "654 Lakeview Dr, Austin, TX 78734",
+  "amenities": [
+    "Hot Tub",
+    "Wi-Fi",
+    "Dock",
+    "Kayaks"
+  ],
+  "rentalPolicy": "Minimum stay: 7 nights. No pets.",
+  "cancellationPolicy": "Strict: 50% refund up to 14 days before check-in.",
+  "houseRules": "No smoking. No parties.",
+  "contactInfo": {
+    "name": "Robert Wilson",
+    "phone": "+1-555-123-9876",
+    "email": "robert.wilson@example.com",
+    "taxIdNumber": "123-98-7654"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439027",
+  "title": "Urban Studio Apartment",
+  "description": "Compact studio with modern amenities in a bustling neighborhood.",
+  "price": 100,
+  "location": "Seattle, WA",
+  "hostId": "507f1f77bcf86cd799439028",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/54e099160820e459466d725dadb851db-cc_ft_1536.webp"
+  ],
+  "bedrooms": 1,
+  "bathrooms": 1,
+  "squareFootage": 600,
+  "address": "987 Pine St, Seattle, WA 98101",
+  "amenities": [
+    "Wi-Fi",
+    "Coffee Maker",
+    "Smart TV",
+    "Laundry"
+  ],
+  "rentalPolicy": "Minimum stay: 2 nights. No pets.",
+  "cancellationPolicy": "Flexible: Full refund up to 24 hours before check-in.",
+  "houseRules": "No smoking. No guests without approval.",
+  "contactInfo": {
+    "name": "Anna Davis",
+    "phone": "+1-555-789-4567",
+    "email": "anna.davis@example.com",
+    "taxIdNumber": "789-45-6123"
+  }
+},
+{
+  "_id": "507f1f77bcf86cd799439029",
+  "title": "Mountain Chalet",
+  "description": "Cozy chalet with stunning mountain views and a wood-burning fireplace.",
+  "price": 280,
+  "location": "Park City, UT",
+  "hostId": "507f1f77bcf86cd799439030",
+  "createdAt": {
+    "$numberLong": "1744890000000"
+  },
+  "photos": [
+    "https://photos.zillowstatic.com/fp/06e8fa599d04b31594c159bf3dad062a-cc_ft_1536.webp"
+  ],
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "squareFootage": 1600,
+  "address": "321 Slope Dr, Park City, UT 84060",
+  "amenities": [
+    "Fireplace",
+    "Wi-Fi",
+    "Ski Storage",
+    "Hot Tub"
+  ],
+  "rentalPolicy": "Minimum stay: 5 nights. No smoking.",
+  "cancellationPolicy": "Strict: 50% refund up to 14 days before check-in.",
+  "houseRules": "No pets. No open flames outside.",
+  "contactInfo": {
+    "name": "Chris Evans",
+    "phone": "+1-555-321-7890",
+    "email": "chris.evans@example.com",
+    "taxIdNumber": "321-67-8901"
+  }
+}]

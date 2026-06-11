@@ -11,6 +11,7 @@ import { compare as legacyBcryptCompare } from "./vendor/legacy-bcrypt.js";
 import crypto from "crypto";
 
 import { databaseManager } from "./adapters/manager.ts";
+import { DatabaseSync } from 'node:sqlite';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFile, mkdir, stat, readFileSync, writeFileSync, statSync } from 'node:fs';
@@ -994,6 +995,82 @@ app.post("/api/payment", async (c) => {
 
 // ==== STATIC ROUTES ====
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: Date.now() }));
+
+/** A Listings table row (scalar columns; photos/amenities/host stored as JSON text). */
+interface ListingRow {
+  _id: string;
+  title: string | null;
+  location: string | null;
+  summary: string | null;
+  photos: string | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  sqft: number | null;
+  price: number | null;
+  amenities: string | null;
+  stayPolicy: string | null;
+  cancellationPolicy: string | null;
+  houseRules: string | null;
+  host: string | null;
+  address: string | null;
+  createdAt: number | null;
+}
+
+/**
+ * Read-only SQLite connection holding the stay listings.
+ *
+ * Built from backend/seed/listings.json by `node backend/scripts/seed-listings.mjs`.
+ * Kept separate from the app's primary (auth) database so listings work regardless
+ * of the configured dbType. Opens lazily; null if the db file hasn't been seeded.
+ */
+const listingsDbPath = resolve(dirname(fileURLToPath(import.meta.url)), 'databases', 'listings.db');
+let listingsDb: DatabaseSync | null = null;
+try {
+  listingsDb = new DatabaseSync(listingsDbPath, { readOnly: true });
+} catch {
+  logger.warn(`Listings DB not found at ${listingsDbPath} — run: node backend/scripts/seed-listings.mjs`);
+}
+
+/** Map a Listings row to the client Listing shape, parsing JSON-encoded columns. */
+function rowToListing(r: ListingRow) {
+  return {
+    _id: r._id,
+    title: r.title ?? undefined,
+    location: r.location ?? undefined,
+    summary: r.summary ?? undefined,
+    photos: JSON.parse(r.photos ?? '[]'),
+    bedrooms: r.bedrooms ?? undefined,
+    bathrooms: r.bathrooms ?? undefined,
+    sqft: r.sqft ?? undefined,
+    price: r.price ?? undefined,
+    amenities: JSON.parse(r.amenities ?? '[]'),
+    stayPolicy: r.stayPolicy ?? undefined,
+    cancellationPolicy: r.cancellationPolicy ?? undefined,
+    houseRules: r.houseRules ?? undefined,
+    host: JSON.parse(r.host ?? '{}'),
+    address: r.address ?? undefined,
+  };
+}
+
+/**
+ * GET /api/listings — public list of stay listings from SQLite, newest first.
+ * @returns {Listing[]} JSON array (empty if the db hasn't been seeded).
+ */
+app.get("/api/listings", (c) => {
+  if (!listingsDb) return c.json([]);
+  const rows = listingsDb.prepare("SELECT * FROM Listings ORDER BY createdAt DESC").all() as unknown as ListingRow[];
+  return c.json(rows.map(rowToListing));
+});
+
+/**
+ * GET /api/listings/:id — public single stay listing by id from SQLite.
+ * @returns {Listing} the matching listing, or 404 if no listing has that id.
+ */
+app.get("/api/listings/:id", (c) => {
+  if (!listingsDb) return c.json({ error: "Listing not found" }, 404);
+  const row = listingsDb.prepare("SELECT * FROM Listings WHERE _id = ?").get(c.req.param("id")) as unknown as ListingRow | undefined;
+  return row ? c.json(rowToListing(row)) : c.json({ error: "Listing not found" }, 404);
+});
 
 /**
  * Parse JSON request body with proper error handling

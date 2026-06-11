@@ -189,7 +189,11 @@ export default function DetailView() {
   if (loading) {
     return (
       <>
-        <Header title="Loading..." backButton onBack={() => navigate(-1)} />
+        <Header title="Loading...">
+          <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <DynamicIcon name="chevron-left" size={18} /> Back
+          </button>
+        </Header>
         <div className="flex items-center justify-center h-screen">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-app"></div>
         </div>
@@ -200,7 +204,11 @@ export default function DetailView() {
   if (error || !listing) {
     return (
       <>
-        <Header title="Error" backButton onBack={() => navigate(-1)} />
+        <Header title="Error">
+          <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <DynamicIcon name="chevron-left" size={18} /> Back
+          </button>
+        </Header>
         <div className="flex flex-col items-center justify-center h-screen p-4">
           <DynamicIcon name="alert-circle" size={48} className="text-red-500 mb-4" />
           <p className="text-red-500">{error || 'Listing not found'}</p>
@@ -218,7 +226,11 @@ export default function DetailView() {
 
   return (
     <>
-      <Header title={listing.title ?? ''} backButton onBack={() => navigate(-1)} />
+      <Header title={listing.title ?? ''}>
+        <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <DynamicIcon name="chevron-left" size={18} /> Back
+        </button>
+      </Header>
 
       <div className="flex flex-col bg-background pb-24">
         {/* Photo Gallery */}
