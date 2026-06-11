@@ -5,6 +5,28 @@ import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { Link } from 'react-router';
 import { trackEvent } from '../utils/analytics';
 
+/** A stay listing as returned by the /listings endpoint. */
+interface Listing {
+  /** MongoDB document id. */
+  _id: string;
+  /** Listing headline. */
+  title?: string;
+  /** Human-readable location. */
+  location?: string;
+  /** Short description used for search and previews. */
+  summary?: string;
+  /** Ordered photo URLs; first is the cover image. */
+  photos?: string[];
+  /** Number of bedrooms. */
+  bedrooms?: number;
+  /** Number of bathrooms. */
+  bathrooms?: number;
+  /** Square footage. */
+  sqft?: number;
+  /** Nightly price in dollars. */
+  price?: number;
+}
+
 /**
  * Home view component displaying stay listings grid with search
  *
@@ -15,25 +37,26 @@ import { trackEvent } from '../utils/analytics';
  * - Links to detail pages at /app/r/:id
  *
  * @component
- * @returns {JSX.Element} Home view with listings grid
+ * @returns Home view with listings grid
  */
 export default function HomeView() {
-  const [listings, setListings] = useState([]);
-  const [filteredListings, setFilteredListings] = useState([]);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const data = await apiRequest('/listings');
+        const data = await apiRequest<Listing[]>('/listings');
         setListings(data);
         setFilteredListings(data);
         trackEvent('listings-loaded', { count: data.length });
       } catch (err) {
-        setError(err.message);
-        trackEvent('listings-load-failed', { error: err.message });
+        const message = err instanceof Error ? err.message : String(err);
+        setError(message);
+        trackEvent('listings-load-failed', { error: message });
       } finally {
         setLoading(false);
       }
@@ -68,9 +91,9 @@ export default function HomeView() {
 
   /**
    * Handle listing card click for analytics
-   * @param {Object} listing - Listing object
+   * @param listing - Listing object
    */
-  const handleListingClick = (listing) => {
+  const handleListingClick = (listing: Listing) => {
     trackEvent('listing-clicked', {
       listingId: listing._id,
       title: listing.title?.substring(0, 100),
@@ -81,10 +104,10 @@ export default function HomeView() {
 
   /**
    * Format price for display
-   * @param {number} price - Price in dollars
-   * @returns {string} Formatted price string
+   * @param price - Price in dollars
+   * @returns Formatted price string
    */
-  const formatPrice = (price) => {
+  const formatPrice = (price?: number): string => {
     if (!price) return '$0';
     return `$${price.toLocaleString()}`;
   };
