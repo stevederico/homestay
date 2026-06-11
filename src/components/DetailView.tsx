@@ -5,6 +5,48 @@ import { useParams, useNavigate } from 'react-router';
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { trackEvent } from '../utils/analytics';
 
+/** Host contact details attached to a listing. */
+interface Host {
+  /** Host display name. */
+  name?: string;
+  /** Host contact email. */
+  email?: string;
+  /** Host contact phone. */
+  phone?: string;
+}
+
+/** A stay listing as returned by the /listings/:id endpoint. */
+interface Listing {
+  /** MongoDB document id. */
+  _id: string;
+  /** Listing headline. */
+  title?: string;
+  /** Human-readable location. */
+  location?: string;
+  /** Long-form description. */
+  summary?: string;
+  /** Ordered photo URLs. */
+  photos?: string[];
+  /** Number of bedrooms. */
+  bedrooms?: number;
+  /** Number of bathrooms. */
+  bathrooms?: number;
+  /** Square footage. */
+  sqft?: number;
+  /** Nightly price in dollars. */
+  price?: number;
+  /** Amenity labels. */
+  amenities?: string[];
+  /** Stay policy text. */
+  stayPolicy?: string;
+  /** Cancellation policy text. */
+  cancellationPolicy?: string;
+  /** House rules text. */
+  houseRules?: string;
+  /** Host contact info. */
+  host?: Host;
+}
+
 /**
  * Detail view component for individual stay listing
  *
@@ -19,14 +61,14 @@ import { trackEvent } from '../utils/analytics';
  * - Host contact info
  *
  * @component
- * @returns {JSX.Element} Detail view with full listing info
+ * @returns Detail view with full listing info
  */
 export default function DetailView() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [listing, setListing] = useState(null);
+  const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [nights, setNights] = useState(0);
@@ -37,7 +79,7 @@ export default function DetailView() {
 
     const fetchListing = async () => {
       try {
-        const data = await apiRequest(`/listings/${id}`);
+        const data = await apiRequest<Listing>(`/listings/${id}`);
         setListing(data);
         trackEvent('listing-viewed', {
           listingId: id,
@@ -48,8 +90,9 @@ export default function DetailView() {
           bathrooms: data.bathrooms
         });
       } catch (err) {
-        setError(err.message);
-        trackEvent('listing-view-failed', { listingId: id, error: err.message });
+        const message = err instanceof Error ? err.message : String(err);
+        setError(message);
+        trackEvent('listing-view-failed', { listingId: id, error: message });
       } finally {
         setLoading(false);
       }
@@ -71,7 +114,7 @@ export default function DetailView() {
     if (checkIn && checkOut) {
       const start = new Date(checkIn);
       const end = new Date(checkOut);
-      const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+      const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
       setNights(diff > 0 ? diff : 0);
 
       if (diff > 0) {
@@ -88,10 +131,10 @@ export default function DetailView() {
 
   /**
    * Format price for display
-   * @param {number} price - Price in dollars
-   * @returns {string} Formatted price string
+   * @param price - Price in dollars
+   * @returns Formatted price string
    */
-  const formatPrice = (price) => {
+  const formatPrice = (price?: number): string => {
     if (!price) return '$0';
     return `$${price.toLocaleString()}`;
   };
@@ -100,6 +143,7 @@ export default function DetailView() {
    * Handle reserve button click
    */
   const handleReserve = () => {
+    if (!listing) return;
     if (!checkIn || !checkOut) {
       trackEvent('reserve-validation-failed', {
         listingId: id,
@@ -117,7 +161,7 @@ export default function DetailView() {
       return;
     }
 
-    const totalPrice = listing.price * nights;
+    const totalPrice = (listing.price ?? 0) * nights;
     trackEvent('reserve-clicked', {
       listingId: id,
       title: listing.title?.substring(0, 100),
@@ -133,8 +177,9 @@ export default function DetailView() {
 
   /**
    * Handle host contact click
+   * @param method - Contact method used (e.g. 'email')
    */
-  const handleHostContact = (method) => {
+  const handleHostContact = (method: string) => {
     trackEvent('host-contacted', {
       listingId: id,
       method: method
@@ -173,14 +218,14 @@ export default function DetailView() {
 
   return (
     <>
-      <Header title={listing.title} backButton onBack={() => navigate(-1)} />
+      <Header title={listing.title ?? ''} backButton onBack={() => navigate(-1)} />
 
       <div className="flex flex-col bg-background pb-24">
         {/* Photo Gallery */}
         <div data-section-id="photo-gallery" className="overflow-x-auto">
           <div className="flex gap-2 p-4 min-w-max">
-            {listing.photos?.length > 0 ? (
-              listing.photos.map((photo, index) => (
+            {(listing.photos?.length ?? 0) > 0 ? (
+              listing.photos?.map((photo, index) => (
                 <div key={index} className="w-80 h-60 flex-shrink-0 rounded-xl overflow-hidden bg-muted">
                   <img
                     src={photo}
@@ -248,11 +293,11 @@ export default function DetailView() {
           )}
 
           {/* Amenities */}
-          {listing.amenities?.length > 0 && (
+          {(listing.amenities?.length ?? 0) > 0 && (
             <div>
               <h2 className="text-lg font-semibold mb-3">Amenities</h2>
               <div className="grid grid-cols-2 gap-3">
-                {listing.amenities.map((amenity, index) => (
+                {listing.amenities?.map((amenity, index) => (
                   <div key={index} className="flex items-center gap-2 text-muted-foreground">
                     <DynamicIcon name="check" size={16} className="text-app" />
                     <span>{amenity}</span>
@@ -352,7 +397,7 @@ export default function DetailView() {
               </div>
               {nights > 0 && (
                 <p className="text-sm text-muted-foreground">
-                  {nights} night{nights > 1 ? 's' : ''} = {formatPrice(listing.price * nights)} total
+                  {nights} night{nights > 1 ? 's' : ''} = {formatPrice((listing.price ?? 0) * nights)} total
                 </p>
               )}
             </div>
