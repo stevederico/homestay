@@ -335,12 +335,8 @@ function resolveEnvironmentVariables(str: string): string {
 }
 
 /**
-<<<<<<< /var/folders/36/sb_krt0x59bb7dwlkz502dbm0000gn/T/sk-mf-cur.tmp
- * Runtime type guard for the parsed contents of backend/config.json
-=======
  * Validate the parsed config.json shape: a `database` object carrying string
  * `db`, `dbType`, and `connectionString`. Narrows unknown JSON before use.
->>>>>>> /var/folders/36/sb_krt0x59bb7dwlkz502dbm0000gn/T/sk-mf-new.tmp
  *
  * @param value - Parsed JSON value
  * @returns True if the value matches the expected config shape
@@ -633,14 +629,10 @@ function jwtSign(payload: JwtPayload, secret: string): string {
 }
 
 /**
-<<<<<<< /var/folders/36/sb_krt0x59bb7dwlkz502dbm0000gn/T/sk-mf-cur.tmp
- * Runtime type guard for a decoded JWT payload
-=======
  * Validate a decoded JWT body matches the expected payload shape.
  *
  * Checks the fields jwtVerify and authMiddleware read: `userID` (string) and
  * `exp` (number). Narrows unknown JSON before it is trusted as a JwtPayload.
->>>>>>> /var/folders/36/sb_krt0x59bb7dwlkz502dbm0000gn/T/sk-mf-new.tmp
  *
  * @param value - Decoded JSON value from the token body
  * @returns True if the value is a valid JwtPayload
