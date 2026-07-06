@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.7.0
+
+  Migrate primary database from MongoDB to SQLite (no existing users; converted to empty SQLite auth db)
+
 1.6.0
 
   Upgrade skateboard to 3.4.0 (skateboard-ui 3.7.0)
