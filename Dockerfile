@@ -28,6 +28,9 @@ RUN apk add --no-cache --virtual .build-deps python3 make g++ \
     && cd backend && npm install --omit=dev \
     && apk del .build-deps
 
+# Seed the read-only Listings DB into the image (built from committed seed/listings.json).
+RUN cd backend && mkdir -p databases && node scripts/seed-listings.mjs
+
 RUN chown -R node:node /app/backend
 
 USER node
