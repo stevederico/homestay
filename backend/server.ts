@@ -993,26 +993,6 @@ app.post("/api/payment", async (c) => {
 // ==== STATIC ROUTES ====
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: Date.now() }));
 
-/** A Listings table row (scalar columns; photos/amenities/host stored as JSON text). */
-interface ListingRow {
-  _id: string;
-  title: string | null;
-  location: string | null;
-  summary: string | null;
-  photos: string | null;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  sqft: number | null;
-  price: number | null;
-  amenities: string | null;
-  stayPolicy: string | null;
-  cancellationPolicy: string | null;
-  houseRules: string | null;
-  host: string | null;
-  address: string | null;
-  createdAt: number | null;
-}
-
 /**
  * Read-only SQLite connection holding the stay listings.
  *
@@ -1028,24 +1008,49 @@ try {
   logger.warn(`Listings DB not found at ${listingsDbPath} — run: node backend/scripts/seed-listings.mjs`);
 }
 
-/** Map a Listings row to the client Listing shape, parsing JSON-encoded columns. */
-function rowToListing(r: ListingRow) {
+/** Read a SQL cell as a string, or undefined when it isn't one. */
+function readString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+/** Read a SQL cell as a number, or undefined when it isn't one. */
+function readNumber(value: unknown): number | undefined {
+  return typeof value === 'number' ? value : undefined;
+}
+
+/** Parse a JSON text column, returning `fallback` when the cell is absent or unparseable. */
+function parseJSONField(value: unknown, fallback: unknown): unknown {
+  if (typeof value !== 'string') return fallback;
+  try { return JSON.parse(value); } catch { return fallback; }
+}
+
+/**
+ * Map a raw Listings row to the client Listing shape.
+ *
+ * node:sqlite yields each row as Record<string, SQLOutputValue>; scalar columns are
+ * read through typeof guards and the JSON text columns (photos/amenities/host) are
+ * parsed with defaults, so the boundary needs no `as` cast.
+ *
+ * @param r - Raw row keyed by column name
+ * @returns Listing object shaped for the frontend
+ */
+function rowToListing(r: Record<string, unknown>) {
   return {
-    _id: r._id,
-    title: r.title ?? undefined,
-    location: r.location ?? undefined,
-    summary: r.summary ?? undefined,
-    photos: JSON.parse(r.photos ?? '[]'),
-    bedrooms: r.bedrooms ?? undefined,
-    bathrooms: r.bathrooms ?? undefined,
-    sqft: r.sqft ?? undefined,
-    price: r.price ?? undefined,
-    amenities: JSON.parse(r.amenities ?? '[]'),
-    stayPolicy: r.stayPolicy ?? undefined,
-    cancellationPolicy: r.cancellationPolicy ?? undefined,
-    houseRules: r.houseRules ?? undefined,
-    host: JSON.parse(r.host ?? '{}'),
-    address: r.address ?? undefined,
+    _id: readString(r._id) ?? '',
+    title: readString(r.title),
+    location: readString(r.location),
+    summary: readString(r.summary),
+    photos: parseJSONField(r.photos, []),
+    bedrooms: readNumber(r.bedrooms),
+    bathrooms: readNumber(r.bathrooms),
+    sqft: readNumber(r.sqft),
+    price: readNumber(r.price),
+    amenities: parseJSONField(r.amenities, []),
+    stayPolicy: readString(r.stayPolicy),
+    cancellationPolicy: readString(r.cancellationPolicy),
+    houseRules: readString(r.houseRules),
+    host: parseJSONField(r.host, {}),
+    address: readString(r.address),
   };
 }
 
@@ -1055,7 +1060,7 @@ function rowToListing(r: ListingRow) {
  */
 app.get("/api/listings", (c) => {
   if (!listingsDb) return c.json([]);
-  const rows = listingsDb.prepare("SELECT * FROM Listings ORDER BY createdAt DESC").all() as unknown as ListingRow[];
+  const rows = listingsDb.prepare("SELECT * FROM Listings ORDER BY createdAt DESC").all();
   return c.json(rows.map(rowToListing));
 });
 
@@ -1065,7 +1070,7 @@ app.get("/api/listings", (c) => {
  */
 app.get("/api/listings/:id", (c) => {
   if (!listingsDb) return c.json({ error: "Listing not found" }, 404);
-  const row = listingsDb.prepare("SELECT * FROM Listings WHERE _id = ?").get(c.req.param("id")) as unknown as ListingRow | undefined;
+  const row = listingsDb.prepare("SELECT * FROM Listings WHERE _id = ?").get(c.req.param("id"));
   return row ? c.json(rowToListing(row)) : c.json({ error: "Listing not found" }, 404);
 });
 
