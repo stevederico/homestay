@@ -29,11 +29,13 @@ export default function AnalyticsProvider({ children }: AnalyticsProviderProps) 
     const previousUser = previousUserRef.current;
 
     if (currentUser && !previousUser) {
-      identifyUser(currentUser.id as string, {
-        email: currentUser.email,
-        name: currentUser.name,
-        subscription: currentUser.subscription?.status || 'free'
-      });
+      if (typeof currentUser.id === 'string') {
+        identifyUser(currentUser.id, {
+          email: currentUser.email,
+          name: currentUser.name,
+          subscription: currentUser.subscription?.status || 'free'
+        });
+      }
       trackEvent('signin-completed');
     }
 
