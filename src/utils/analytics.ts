@@ -16,6 +16,8 @@ interface Umami {
 declare global {
   interface Window {
     umami?: Umami;
+    /** dottie tracker (api.dottie.ai/script.js) — same shape as Umami, dual-fired in parallel. */
+    dottie?: Umami;
   }
 }
 
@@ -73,10 +75,11 @@ const sanitizeEventData = (data: EventData): Record<string, unknown> => {
  */
 export const trackEvent = (eventName: string, data: EventData = {}): void => {
   if (isLocal()) return;
-  if (typeof window !== 'undefined' && window.umami) {
+  if (typeof window !== 'undefined' && (window.umami || window.dottie)) {
     try {
       const sanitizedData = sanitizeEventData(data);
-      window.umami.track(eventName, sanitizedData);
+      window.umami?.track?.(eventName, sanitizedData);
+      window.dottie?.track?.(eventName, sanitizedData);
     } catch (error) {
       console.warn('Analytics tracking failed:', error);
     }
@@ -91,12 +94,14 @@ export const trackEvent = (eventName: string, data: EventData = {}): void => {
  */
 export const identifyUser = (userId: string, data: EventData = {}): void => {
   if (isLocal()) return;
-  if (typeof window !== 'undefined' && window.umami) {
+  if (typeof window !== 'undefined' && (window.umami || window.dottie)) {
     try {
       if (userId) {
-        window.umami.identify(userId, data);
+        window.umami?.identify?.(userId, data);
+        window.dottie?.identify?.(userId, data);
       } else {
-        window.umami.identify(data);
+        window.umami?.identify?.(data);
+        window.dottie?.identify?.(data);
       }
     } catch (error) {
       console.warn('User identification failed:', error);
@@ -109,9 +114,10 @@ export const identifyUser = (userId: string, data: EventData = {}): void => {
  */
 export const trackPageView = (): void => {
   if (isLocal()) return;
-  if (typeof window !== 'undefined' && window.umami) {
+  if (typeof window !== 'undefined' && (window.umami || window.dottie)) {
     try {
-      window.umami.track();
+      window.umami?.track?.();
+      window.dottie?.track?.();
     } catch (error) {
       console.warn('Page view tracking failed:', error);
     }
