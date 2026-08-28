@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+1.8.0
+
+  Roll back webhook record on failure
+  Add deleteWebhookEvent adapter method
+
 1.7.0
 
   Migrate primary database from MongoDB to SQLite (no existing users; converted to empty SQLite auth db)

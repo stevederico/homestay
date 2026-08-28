@@ -454,6 +454,20 @@ export class LibSQLProvider implements DatabaseProvider<Client> {
   }
 
   /**
+   * Remove a webhook event record
+   *
+   * Lets a delivery that failed mid-processing be retried: without this the
+   * idempotency check would skip Stripe's retry and the update would be lost.
+   *
+   * @param db - libSQL client
+   * @param eventId - Stripe event id to forget
+   * @returns Nothing
+   */
+  async deleteWebhookEvent(db: Client, eventId: string): Promise<void> {
+    await db.execute({ sql: "DELETE FROM WebhookEvents WHERE event_id = ?", args: [eventId] });
+  }
+
+  /**
    * Execute a custom SQL query (or transaction) with the unified result envelope.
    * SELECTs return mapped rows; writes return affected counts / last insert id.
    *
