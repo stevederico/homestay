@@ -1,5 +1,14 @@
 ## CHANGELOG
 
+1.9.0
+
+  Upgrade skateboard 4.11.0 to 5.6.0
+  Replace Hono JS backend with zero-crate Rust backend
+  Port GET /api/listings and GET /api/listings/:id into routes.rs
+  Import icons from lucide-react 0.546.0 (skateboard-ui 5.1 dropped /icons and /DynamicIcon)
+  Repin react-router 7.18.3 as a direct dependency
+  Drop dead npm scripts left by the JS backend
+
 1.8.0
 
   Roll back webhook record on failure

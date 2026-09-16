@@ -1,39 +1,45 @@
 # BXStay
 
-Stay property management application.
+Stay listings app. Browse verified vacation stays, open a listing, pick dates, request a booking.
 
-**Version:** 1.2.5 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com) | **Railway Service:** `bxstay`
+**Version:** 1.9.0 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
 
 ## Tech Stack
 
-- React 19.2, Vite 7.1, skateboard-ui 1.2.20
-- Hono backend, SQLite database
+- React 19, Vite 8, skateboard 5.6.0, skateboard-ui 5.1.0
+- Zero-crate Rust backend, SQLite (auth + a separate read-only listings catalog)
 - Tailwind CSS v4
 
 ## Setup
 
 ```bash
-deno install
-deno run start    # Frontend :5173 + Backend :8000
+npm install
+npm run start          # Frontend :5173
+cd backend && cargo run   # Backend :8000
+```
+
+Seed the listings catalog (once, from `backend/seed/listings.json`):
+
+```bash
+node backend/scripts/seed-listings.mjs
 ```
 
 ## Scripts
 
-- `deno run start` — Development (frontend + backend)
-- `deno run build` — Production build
-- `deno run prod` — Deploy to Railway
+- `npm run start` — Frontend dev server
+- `npm run build` — Production frontend build
+- `cd backend && cargo test --locked` — Backend tests
+- `npm run test` — Frontend typecheck + script tests
 
 ## Routes
 
 **Public:** `/`, `/terms`, `/privacy`, `/subs`, `/eula`
-**Protected:** `/app/*` (authentication required)
+**Protected:** `/app/home` (listings grid), `/app/r/:id` (listing detail)
 
-## Deploy
+## API
 
-```bash
-railway link -p bixby -e production -s bxstay
-railway up
-```
+- `GET /api/listings` — public catalog, newest first
+- `GET /api/listings/:id` — public single listing
 
 ---
 
