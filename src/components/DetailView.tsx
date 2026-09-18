@@ -1,5 +1,5 @@
 import Header from '@stevederico/skateboard-ui/Header';
-import DynamicIcon from '@stevederico/skateboard-ui/DynamicIcon';
+import { ChevronLeft, AlertCircle, Image, MapPin, Bed, Bath, Square, Check, User } from 'lucide-react';
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from 'react-router';
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
@@ -191,7 +191,7 @@ export default function DetailView() {
       <>
         <Header title="Loading...">
           <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-            <DynamicIcon name="chevron-left" size={18} /> Back
+            <ChevronLeft size={18} /> Back
           </button>
         </Header>
         <div className="flex items-center justify-center h-screen">
@@ -206,11 +206,11 @@ export default function DetailView() {
       <>
         <Header title="Error">
           <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-            <DynamicIcon name="chevron-left" size={18} /> Back
+            <ChevronLeft size={18} /> Back
           </button>
         </Header>
         <div className="flex flex-col items-center justify-center h-screen p-4">
-          <DynamicIcon name="alert-circle" size={48} className="text-red-500 mb-4" />
+          <AlertCircle size={48} className="text-red-500 mb-4" />
           <p className="text-red-500">{error || 'Listing not found'}</p>
           <button
             onClick={() => navigate('/app/home')}
@@ -228,7 +228,7 @@ export default function DetailView() {
     <>
       <Header title={listing.title ?? ''}>
         <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-          <DynamicIcon name="chevron-left" size={18} /> Back
+          <ChevronLeft size={18} /> Back
         </button>
       </Header>
 
@@ -248,7 +248,7 @@ export default function DetailView() {
               ))
             ) : (
               <div className="w-80 h-60 flex-shrink-0 rounded-xl bg-accent flex items-center justify-center">
-                <DynamicIcon name="image" size={48} className="opacity-30" />
+                <Image size={48} className="opacity-30" />
               </div>
             )}
           </div>
@@ -260,7 +260,7 @@ export default function DetailView() {
           <div>
             <h1 className="text-2xl font-bold">{listing.title}</h1>
             <p className="text-muted-foreground flex items-center gap-1 mt-1">
-              <DynamicIcon name="map-pin" size={16} />
+              <MapPin size={16} />
               {listing.location}
             </p>
           </div>
@@ -270,7 +270,7 @@ export default function DetailView() {
             {listing.bedrooms && (
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2">
-                  <DynamicIcon name="bed" size={20} />
+                  <Bed size={20} />
                   <span className="text-xl font-semibold">{listing.bedrooms}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">Bedrooms</p>
@@ -279,7 +279,7 @@ export default function DetailView() {
             {listing.bathrooms && (
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2">
-                  <DynamicIcon name="bath" size={20} />
+                  <Bath size={20} />
                   <span className="text-xl font-semibold">{listing.bathrooms}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">Bathrooms</p>
@@ -288,7 +288,7 @@ export default function DetailView() {
             {listing.sqft && (
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2">
-                  <DynamicIcon name="square" size={20} />
+                  <Square size={20} />
                   <span className="text-xl font-semibold">{listing.sqft.toLocaleString()}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">Sq Ft</p>
@@ -311,7 +311,7 @@ export default function DetailView() {
               <div className="grid grid-cols-2 gap-3">
                 {listing.amenities?.map((amenity, index) => (
                   <div key={index} className="flex items-center gap-2 text-muted-foreground">
-                    <DynamicIcon name="check" size={16} className="text-app" />
+                    <Check size={16} className="text-app" />
                     <span>{amenity}</span>
                   </div>
                 ))}
@@ -347,7 +347,7 @@ export default function DetailView() {
               <h2 className="text-lg font-semibold mb-3">Host</h2>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-app/20 flex items-center justify-center">
-                  <DynamicIcon name="user" size={24} className="text-app" />
+                  <User size={24} className="text-app" />
                 </div>
                 <div>
                   <p className="font-medium">{listing.host.name}</p>

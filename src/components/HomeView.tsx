@@ -1,5 +1,5 @@
 import Header from '@stevederico/skateboard-ui/Header';
-import DynamicIcon from '@stevederico/skateboard-ui/DynamicIcon';
+import { Search, Home, Image, Bed, Bath, Square } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { Link } from 'react-router';
@@ -120,7 +120,7 @@ export default function HomeView() {
         {/* Search */}
         <div data-section-id="search-bar" className="p-4 border-b bg-background">
           <div className="relative">
-            <DynamicIcon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
@@ -144,7 +144,7 @@ export default function HomeView() {
             </div>
           ) : filteredListings.length === 0 ? (
             <div className="text-center py-8 opacity-60">
-              <DynamicIcon name="home" size={48} className="mx-auto mb-4 opacity-40" />
+              <Home size={48} className="mx-auto mb-4 opacity-40" />
               <p>{searchQuery ? 'No stays match your search' : 'No stays available'}</p>
             </div>
           ) : (
@@ -167,7 +167,7 @@ export default function HomeView() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <DynamicIcon name="image" size={32} className="opacity-30" />
+                        <Image size={32} className="opacity-30" />
                       </div>
                     )}
                   </div>
@@ -181,19 +181,19 @@ export default function HomeView() {
                     <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
                       {listing.bedrooms && (
                         <span className="flex items-center gap-1">
-                          <DynamicIcon name="bed" size={14} />
+                          <Bed size={14} />
                           {listing.bedrooms}
                         </span>
                       )}
                       {listing.bathrooms && (
                         <span className="flex items-center gap-1">
-                          <DynamicIcon name="bath" size={14} />
+                          <Bath size={14} />
                           {listing.bathrooms}
                         </span>
                       )}
                       {listing.sqft && (
                         <span className="flex items-center gap-1">
-                          <DynamicIcon name="square" size={14} />
+                          <Square size={14} />
                           {listing.sqft.toLocaleString()} sqft
                         </span>
                       )}

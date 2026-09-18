@@ -297,6 +297,58 @@ Rate limit headers:
 
 ---
 
+### Listings (public)
+
+Catalog is a separate read-only SQLite file (`backend/databases/listings.db`), not the auth database. Unseeded: list returns `[]`, get returns 404.
+
+#### GET /api/listings
+
+Public list, newest first. No auth.
+
+```bash
+curl -sS http://localhost:8000/api/listings
+```
+
+**Response (200):**
+```json
+[
+  {
+    "_id": "64f1a2b3c4d5e6f7a8b9c0d1",
+    "title": "Hill Country Cabin",
+    "location": "Austin, TX",
+    "summary": "A quiet stay among oaks.",
+    "photos": ["https://img.example/1.webp"],
+    "bedrooms": 2,
+    "bathrooms": 1.5,
+    "sqft": 900,
+    "price": 180,
+    "amenities": ["Wifi", "Kitchen"],
+    "stayPolicy": "2 night min",
+    "cancellationPolicy": "Flexible",
+    "houseRules": "No parties",
+    "host": { "name": "Ada", "email": "ada@example.com", "phone": null },
+    "address": "123 Main St"
+  }
+]
+```
+
+#### GET /api/listings/:id
+
+Public single listing. No auth.
+
+```bash
+curl -sS http://localhost:8000/api/listings/64f1a2b3c4d5e6f7a8b9c0d1
+```
+
+**Response (200):** same object as one list item.
+
+**Error (404):** listing missing or catalog unseeded
+```json
+{ "error": "Listing not found" }
+```
+
+---
+
 ## Error Responses
 
 All errors return JSON with an `error` field:
