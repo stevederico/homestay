@@ -92,7 +92,7 @@ fn listings_db(state: &AppState) -> Option<db::Db> {
     if !state.listings_db_path.is_file() {
         return None;
     }
-    db::Db::open(state.listings_db_path.to_str()?).ok()
+    db::Db::open_readonly(state.listings_db_path.to_str()?).ok()
 }
 
 fn json_field(row: &db::Row, col: &str, fallback: Json) -> Json {
@@ -1494,6 +1494,8 @@ mod tests {
             std::env::remove_var("STRIPE_ENDPOINT_SECRET");
             std::env::remove_var("PORT");
             std::env::remove_var("NODE_ENV");
+            std::env::remove_var("DB_TYPE");
+            std::env::remove_var("LIBSQL_URL");
         }
         let state = AppState::open_in(&dir, 2, Logger::new(true)).expect("open");
         (state, dir)

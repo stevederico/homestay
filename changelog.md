@@ -8,6 +8,7 @@
   Import icons from lucide-react 0.546.0 (skateboard-ui 5.1 dropped /icons and /DynamicIcon)
   Repin react-router 7.18.3 as a direct dependency
   Drop dead npm scripts left by the JS backend
+  Honor DB_TYPE=libsql, copy constants.json, restore analytics CSP, open listings.db read-only
 
 1.8.0
 

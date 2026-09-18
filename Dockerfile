@@ -34,6 +34,7 @@ WORKDIR /app
 COPY --from=frontend /app/dist ./dist
 COPY --from=backend /build/target/release/skateboard-backend /usr/local/bin/skateboard-backend
 COPY backend/config.json ./backend/config.json
+COPY src/constants.json ./src/constants.json
 COPY --from=frontend /app/backend/databases/listings.db ./backend/databases/listings.db
 
 RUN mkdir -p /app/backend/databases \
