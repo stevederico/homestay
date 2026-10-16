@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.10.0
+
+  Drop aob from CSP
+
 1.9.0
 
   Upgrade skateboard 4.11.0 to 5.6.0
