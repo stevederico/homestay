@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+1.14.0
+
+  Gate listing detail
+  Add upgrade prompt
+  Share free quota
+
 1.13.0
 
   Update README versions

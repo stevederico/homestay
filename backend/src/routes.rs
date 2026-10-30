@@ -51,7 +51,9 @@ fn dispatch(state: &AppState, req: &Request) -> Response {
         ("POST", "/api/portal") => portal(state, req),
         // Literal `/api/listings` before `/api/listings/:id` or the id swallows the list.
         ("GET", "/api/listings") => listings_list(state),
-        ("GET", p) if let Some(id) = p.strip_prefix("/api/listings/") => listings_get(state, id),
+        ("GET", p) if let Some(id) = p.strip_prefix("/api/listings/") => {
+            listings_get(state, req, id)
+        }
         (m, p) if p.starts_with("/api/") => {
             if m == "GET" || m == "HEAD" {
                 not_found()
@@ -163,8 +165,17 @@ fn listings_list(state: &AppState) -> Response {
     }
 }
 
-/// GET /api/listings/:id — public single listing. 404 when missing or unseeded.
-fn listings_get(state: &AppState, id: &str) -> Response {
+/// GET /api/listings/:id — single listing, gated by the Premium Host plan.
+///
+/// Signed-in only (401 otherwise). Subscribers get unlimited views; a free
+/// user spends one unit of the shared free-tier quota (`FREE_USAGE_LIMIT` per
+/// 30-day window) per view and gets 402 once it is gone. 404 when missing or
+/// unseeded, checked before the quota so a bad id never costs a view.
+fn listings_get(state: &AppState, req: &Request, id: &str) -> Response {
+    let user_id = match require_auth(state, req) {
+        Ok(id) => id,
+        Err(r) => return r,
+    };
     if id.is_empty() || id.contains('/') {
         return err_json(404, "Listing not found");
     }
@@ -176,7 +187,10 @@ fn listings_get(state: &AppState, id: &str) -> Response {
         &[Value::Text(id.to_string())],
     ) {
         Ok(rows) => match rows.first() {
-            Some(row) => json_res(200, &listing_json(row)),
+            Some(row) => match require_listing_access(state, &user_id) {
+                Ok(()) => json_res(200, &listing_json(row)),
+                Err(res) => res,
+            },
             None => err_json(404, "Listing not found"),
         },
         Err(e) => {
@@ -749,6 +763,75 @@ fn sub_expires_iso(sub: &Subscription) -> Json {
 /// Length of a free-tier usage window, in seconds (30 days).
 const USAGE_WINDOW_SECS: i64 = 30 * 24 * 60 * 60;
 
+/// What the 402 from a gated route tells a free user to do.
+const LISTINGS_UPGRADE_MSG: &str = "Upgrade to Premium Host for unlimited listings";
+
+/// The 402 body returned when a free user has spent the free listing views.
+fn upgrade_required(limit: i64) -> Response {
+    json_res(
+        402,
+        &json::obj([
+            ("error", json::s(LISTINGS_UPGRADE_MSG)),
+            ("remaining", json::i(0)),
+            ("total", json::i(limit)),
+            ("isSubscriber", Json::Bool(false)),
+        ]),
+    )
+}
+
+/// Spend one free-tier use for `user_id` in the current 30-day window.
+///
+/// Starts a fresh window (counting this use) when the stored one has expired.
+///
+/// # Returns
+/// The count after this use, or `None` when the window is already spent.
+///
+/// # Errors
+/// Returns [`db::DbError`] on a driver failure.
+fn consume_free_use(
+    state: &AppState,
+    user_id: &str,
+    usage: &Usage,
+    limit: i64,
+) -> Result<Option<i64>, db::DbError> {
+    // A limit below 1 admits nothing, including the first request of a new
+    // window — which the window reset below would otherwise wave through.
+    if limit < 1 {
+        return Ok(None);
+    }
+    let now = config::now_secs();
+    if usage.reset_at.map(|r| now > r).unwrap_or(true) {
+        // Reset and first increment together: a separate increment could be
+        // issued by a concurrent request and then erased by this reset.
+        let count = state
+            .pool
+            .reset_usage_window(user_id, now + USAGE_WINDOW_SECS, true)?;
+        return Ok(Some(count));
+    }
+    // The limit is enforced inside the UPDATE, so concurrent requests
+    // cannot both be admitted at the boundary.
+    state.pool.consume_usage(user_id, limit)
+}
+
+/// Paid gate for listing detail: subscribers pass, free users spend one
+/// free-tier use and get [`upgrade_required`] once the window is spent.
+fn require_listing_access(state: &AppState, user_id: &str) -> Result<(), Response> {
+    let user = match state.pool.find_user(&UserQuery::Id(user_id.to_string())) {
+        Ok(Some(u)) => u,
+        Ok(None) => return Err(err_json(404, "User not found")),
+        Err(e) => return Err(db_err(state, "Listing access error", &e)),
+    };
+    if user.subscription.as_ref().is_some_and(is_subscriber) {
+        return Ok(());
+    }
+    let limit = state.free_usage_limit;
+    match consume_free_use(state, user_id, &resolve_usage(&user), limit) {
+        Ok(Some(_)) => Ok(()),
+        Ok(None) => Err(upgrade_required(limit)),
+        Err(e) => Err(db_err(state, "Listing access error", &e)),
+    }
+}
+
 /// The 429 body returned when a free-tier caller has no quota left.
 fn usage_limit_reached(limit: i64) -> Response {
     json_res(
@@ -810,34 +893,19 @@ fn usage(state: &AppState, req: &Request) -> Response {
     let limit = state.free_usage_limit;
     let now = config::now_secs();
     let mut usage = resolve_usage(&user);
-    let is_tracking = operation == "track";
-    // A limit below 1 admits nothing, including the first request of a new
-    // window — which the window reset below would otherwise wave through.
-    if is_tracking && limit < 1 {
-        return usage_limit_reached(limit);
-    }
-    if usage.reset_at.map(|r| now > r).unwrap_or(true) {
-        let new_reset = now + USAGE_WINDOW_SECS;
-        // Reset and first increment together: a separate increment could be
-        // issued by a concurrent request and then erased by this reset.
-        match state
-            .pool
-            .reset_usage_window(&user_id, new_reset, is_tracking)
-        {
-            Ok(count) => {
-                usage = Usage {
-                    count,
-                    reset_at: Some(new_reset),
-                }
-            }
-            Err(e) => return db_err(state, "Usage tracking error", &e),
-        }
-    } else if is_tracking {
-        // The limit is enforced inside the UPDATE, so concurrent requests
-        // cannot both be admitted at the boundary.
-        match state.pool.consume_usage(&user_id, limit) {
+    if operation == "track" {
+        match consume_free_use(state, &user_id, &usage, limit) {
             Ok(Some(count)) => usage.count = count,
             Ok(None) => return usage_limit_reached(limit),
+            Err(e) => return db_err(state, "Usage tracking error", &e),
+        }
+    } else if usage.reset_at.map(|r| now > r).unwrap_or(true) {
+        // A check on an expired window starts a fresh one without spending.
+        match state
+            .pool
+            .reset_usage_window(&user_id, now + USAGE_WINDOW_SECS, false)
+        {
+            Ok(count) => usage.count = count,
             Err(e) => return db_err(state, "Usage tracking error", &e),
         }
     }
@@ -2594,7 +2662,8 @@ mod tests {
         let res = handle(&state, Request::for_test("GET", "/api/listings"));
         assert_eq!(res.status, 200);
         assert_eq!(json_body(&res).as_arr().map(|a| a.len()), Some(0));
-        let missing = handle(&state, Request::for_test("GET", "/api/listings/nope"));
+        let signup = signed_up(&state, "empty@example.com");
+        let missing = listing_request(&state, &signup, "nope");
         assert_eq!(missing.status, 404);
         assert_eq!(json_body(&missing).get_str("error"), Some("Listing not found"));
         std::fs::remove_dir_all(&dir).ok();
@@ -2616,18 +2685,155 @@ mod tests {
         assert_eq!(arr[0].get("bathrooms").and_then(Json::as_f64), Some(1.5));
         assert_eq!(arr[0].get("photos").and_then(Json::as_arr).map(|a| a.len()), Some(1));
 
-        let one = handle(&state, Request::for_test("GET", "/api/listings/old"));
+        let signup = signed_up(&state, "reader@example.com");
+        let one = listing_request(&state, &signup, "old");
         assert_eq!(one.status, 200);
         let body = json_body(&one);
         assert_eq!(body.get_str("_id"), Some("old"));
         assert_eq!(body.get_str("title"), Some("Old Cabin"));
         assert_eq!(body.get("host").and_then(|h| h.get_str("name")), Some("Ada"));
 
-        let miss = handle(&state, Request::for_test("GET", "/api/listings/missing"));
+        let miss = listing_request(&state, &signup, "missing");
         assert_eq!(miss.status, 404);
 
-        let nested = handle(&state, Request::for_test("GET", "/api/listings/old/extra"));
+        let nested = listing_request(&state, &signup, "old/extra");
         assert_eq!(nested.status, 404);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    /// GET `/api/listings/:id`, carrying the cookies from `signup`.
+    fn listing_request(state: &AppState, signup: &Response, id: &str) -> Response {
+        let mut req = Request::for_test("GET", &format!("/api/listings/{id}"));
+        cookie_header(&mut req, signup);
+        handle(state, req)
+    }
+
+    /// Give `email` an active subscription that has not expired.
+    fn subscribe(state: &AppState, email: &str) {
+        let user = state
+            .pool
+            .find_user(&UserQuery::Email(email.into()))
+            .expect("query")
+            .expect("user");
+        let sub = Subscription {
+            stripe_id: "cus_paid".into(),
+            expires: Some(config::now_secs() + 3600),
+            status: "active".into(),
+            subscription_id: Some("sub_paid".into()),
+        };
+        state
+            .pool
+            .update_user_subscription(&user.id, &sub)
+            .expect("subscribe");
+    }
+
+    #[test]
+    fn listing_detail_requires_sign_in() {
+        let (state, dir) = test_state();
+        seed_listings(&dir);
+        let res = handle(&state, Request::for_test("GET", "/api/listings/old"));
+        assert_eq!(res.status, 401);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn listing_list_stays_public() {
+        let (state, dir) = test_state();
+        seed_listings(&dir);
+        let res = handle(&state, Request::for_test("GET", "/api/listings"));
+        assert_eq!(res.status, 200);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn free_user_gets_402_after_the_free_listing_views() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 2;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "free@example.com");
+        assert_eq!(listing_request(&state, &signup, "old").status, 200);
+        assert_eq!(listing_request(&state, &signup, "new").status, 200);
+        let blocked = listing_request(&state, &signup, "old");
+        assert_eq!(blocked.status, 402);
+        let body = json_body(&blocked);
+        assert_eq!(body.get_str("error"), Some(LISTINGS_UPGRADE_MSG));
+        assert_eq!(body.get_i64("total"), Some(2));
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn free_user_is_blocked_when_the_free_limit_is_zero() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 0;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "zero@example.com");
+        assert_eq!(listing_request(&state, &signup, "old").status, 402);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn missing_listing_does_not_spend_a_free_view() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 1;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "miss@example.com");
+        assert_eq!(listing_request(&state, &signup, "missing").status, 404);
+        assert_eq!(listing_request(&state, &signup, "old").status, 200);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn subscriber_views_listings_past_the_free_limit() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 1;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "paid@example.com");
+        subscribe(&state, "paid@example.com");
+        let statuses: Vec<u16> = (0..3)
+            .map(|_| listing_request(&state, &signup, "old").status)
+            .collect();
+        assert_eq!(statuses, vec![200, 200, 200]);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn expired_subscriber_falls_back_to_the_free_limit() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 0;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "lapsed@example.com");
+        let user = state
+            .pool
+            .find_user(&UserQuery::Email("lapsed@example.com".into()))
+            .expect("query")
+            .expect("user");
+        let sub = Subscription {
+            stripe_id: "cus_lapsed".into(),
+            expires: Some(config::now_secs() - 60),
+            status: "active".into(),
+            subscription_id: Some("sub_lapsed".into()),
+        };
+        state
+            .pool
+            .update_user_subscription(&user.id, &sub)
+            .expect("sub");
+        assert_eq!(listing_request(&state, &signup, "old").status, 402);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn listing_views_share_the_usage_quota() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 1;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "shared@example.com");
+        assert_eq!(listing_request(&state, &signup, "old").status, 200);
+        let mut check = Request::for_test("POST", "/api/usage");
+        cookie_header(&mut check, &signup);
+        check.set_test_body(br#"{"operation":"check"}"#.to_vec());
+        let res = handle(&state, check);
+        assert_eq!(res.status, 200, "{}", String::from_utf8_lossy(&res.body));
+        assert_eq!(json_body(&res).get_i64("remaining"), Some(0));
         std::fs::remove_dir_all(&dir).ok();
     }
 }

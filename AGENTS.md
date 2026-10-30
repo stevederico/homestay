@@ -2,7 +2,7 @@
 
 Project guidance for AI agents working with this repository.
 
-Stay listings app. Public catalog lives in a separate read-only SQLite file (`backend/databases/listings.db`), seeded from `backend/seed/listings.json` via `node backend/scripts/seed-listings.mjs`. Auth/Stripe stay in the primary `BXStay.db`. Custom routes: `GET /api/listings`, `GET /api/listings/:id`.
+Stay listings app. Public catalog lives in a separate read-only SQLite file (`backend/databases/listings.db`), seeded from `backend/seed/listings.json` via `node backend/scripts/seed-listings.mjs`. Auth/Stripe stay in the primary `BXStay.db`. Custom routes: `GET /api/listings` (public), `GET /api/listings/:id` (signed-in; Premium Host subscribers unlimited, free users spend the shared `FREE_USAGE_LIMIT` quota per view and get 402 when it is gone; `DetailView` shows `UpgradeRequired` on 402).
 
 ## Development Commands
 

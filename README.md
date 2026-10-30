@@ -2,7 +2,7 @@
 
 Stay listings app. Browse verified vacation stays, open a listing, pick dates, request a booking.
 
-**Version:** 1.9.0 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
+**Version:** 1.14.0 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
 
 ## Tech Stack
 
@@ -39,7 +39,7 @@ node backend/scripts/seed-listings.mjs
 ## API
 
 - `GET /api/listings` — public catalog, newest first
-- `GET /api/listings/:id` — public single listing
+- `GET /api/listings/:id` — single listing; signed-in only. Free users get `FREE_USAGE_LIMIT` (default 20) listing views per 30 days, then 402 and an upgrade prompt. Premium Host ($19/mo, `bxstay_premium`) is unlimited
 
 ---
 

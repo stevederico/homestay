@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from 'react-router';
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { trackEvent } from '../utils/analytics';
+import { isUpgradeRequired } from '../utils/upgrade';
+import UpgradeRequired from './UpgradeRequired';
 
 /** Host contact details attached to a listing. */
 interface Host {
@@ -59,6 +61,7 @@ interface Listing {
  * - Amenities list
  * - Policies (stay, cancellation, house rules)
  * - Host contact info
+ * - Upgrade prompt when the backend answers 402 (free listing views spent)
  *
  * @component
  * @returns Detail view with full listing info
@@ -69,6 +72,7 @@ export default function DetailView() {
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLocked, setIsLocked] = useState(false);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [nights, setNights] = useState(0);
@@ -90,6 +94,11 @@ export default function DetailView() {
           bathrooms: data.bathrooms
         });
       } catch (err) {
+        if (isUpgradeRequired(err)) {
+          setIsLocked(true);
+          trackEvent('listing-upgrade-required', { listingId: id });
+          return;
+        }
         const message = err instanceof Error ? err.message : String(err);
         setError(message);
         trackEvent('listing-view-failed', { listingId: id, error: message });
@@ -197,6 +206,19 @@ export default function DetailView() {
         <div className="flex items-center justify-center h-screen">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-app"></div>
         </div>
+      </>
+    );
+  }
+
+  if (isLocked) {
+    return (
+      <>
+        <Header title="Premium Host">
+          <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <ChevronLeft size={18} /> Back
+          </button>
+        </Header>
+        <UpgradeRequired />
       </>
     );
   }

@@ -297,7 +297,7 @@ Rate limit headers:
 
 ---
 
-### Listings (public)
+### Listings
 
 Catalog is a separate read-only SQLite file (`backend/databases/listings.db`), not the auth database. Unseeded: list returns `[]`, get returns 404.
 
@@ -334,13 +334,24 @@ curl -sS http://localhost:8000/api/listings
 
 #### GET /api/listings/:id
 
-Public single listing. No auth.
+Single listing. Requires auth (cookie). Gated by the Premium Host plan (`bxstay_premium`):
+
+- Subscribers (active, not expired): unlimited views
+- Free users: each successful view spends one unit of the same quota as `POST /api/usage` (`FREE_USAGE_LIMIT`, default 20, per 30-day window)
+- A missing listing (404) never spends a view
 
 ```bash
-curl -sS http://localhost:8000/api/listings/64f1a2b3c4d5e6f7a8b9c0d1
+curl -sS -b cookies.txt http://localhost:8000/api/listings/64f1a2b3c4d5e6f7a8b9c0d1
 ```
 
 **Response (200):** same object as one list item.
+
+**Error (401):** not signed in
+
+**Error (402):** free views spent
+```json
+{ "error": "Upgrade to Premium Host for unlimited listings", "remaining": 0, "total": 20, "isSubscriber": false }
+```
 
 **Error (404):** listing missing or catalog unseeded
 ```json
@@ -363,6 +374,7 @@ All errors return JSON with an `error` field:
 |------|---------|
 | 400 | Bad Request - Invalid input |
 | 401 | Unauthorized - Not authenticated |
+| 402 | Payment Required - Free tier spent; subscribe to continue |
 | 403 | Forbidden - Invalid CSRF or permission denied |
 | 404 | Not Found - Resource doesn't exist |
 | 429 | Too Many Requests - Rate limited |
