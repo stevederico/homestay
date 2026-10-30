@@ -6,7 +6,7 @@ Stay listings app. Browse verified vacation stays, open a listing, pick dates, r
 
 ## Tech Stack
 
-- React 19, Vite 8, skateboard 5.6.0, skateboard-ui 5.1.0
+- React 19, Vite 8, skateboard 5.6.0, skateboard-ui 5.11.0
 - Zero-crate Rust backend, SQLite (auth + a separate read-only listings catalog)
 - Tailwind CSS v4
 

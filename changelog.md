@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.13.0
+
+  Update README versions
+
 1.12.0
 
   Pin skateboard-ui 5.11.0
