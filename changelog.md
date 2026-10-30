@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.12.0
+
+  Pin skateboard-ui 5.11.0
+
 1.11.0
 
   Re-fetch subscription events
