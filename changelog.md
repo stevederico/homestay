@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+1.11.0
+
+  Re-fetch subscription events
+  Match subscription id
+  Retry webhook DB errors
+
 1.10.0
 
   Drop aob from CSP
