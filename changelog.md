@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+1.15.4
+
+  Remove unbacked claims
+  Replace support card
+
 1.15.3
 
   Rename Featured Host

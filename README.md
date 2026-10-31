@@ -1,6 +1,6 @@
 # BXStay
 
-Stay listings app. Browse verified vacation stays, open a listing, pick dates, request a booking.
+Stay listings app. Browse vacation stays, open a listing, pick dates, request a booking.
 
 **Version:** 1.15.0 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
 

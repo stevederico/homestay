@@ -1,5 +1,5 @@
 {
-    "version": "1.15.3",
+    "version": "1.15.4",
     "url": "https://stay.bixbyapps.com",
     "design": {
         "baseColor": "neutral",
@@ -29,9 +29,9 @@
                 "description": "Properties in the most desirable destinations"
             },
             {
-                "icon": "headset",
-                "title": "24/7 Support",
-                "description": "Our team is available around the clock to assist you"
+                "icon": "images",
+                "title": "Full Stay Details",
+                "description": "Photos, amenities and house rules for each stay"
             }
         ]
     },
@@ -52,19 +52,13 @@
             "lookup_key": "bxstay_premium",
             "features": [
                 "Unlimited Listings",
-                "Featured Placement",
-                "Priority Support",
-                "Analytics Dashboard",
                 "Cancel Anytime"
             ]
         }
     ],
     "pricing": {
         "title": "Simple, Transparent Pricing",
-        "extras": [
-            "Priority Customer Support",
-            "Cancel Anytime"
-        ]
+        "extras": []
     },
     "navLinks": [
         {
