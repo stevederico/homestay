@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+1.15.5
+
+  Remove reserve button
+  Replace locations card
+  Rename listing views
+
 1.15.4
 
   Remove unbacked claims

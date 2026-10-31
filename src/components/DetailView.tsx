@@ -57,7 +57,6 @@ interface Listing {
  * - Property info (title, location, beds/baths/sqft)
  * - Price display with night calculation
  * - Check-in/check-out date inputs
- * - Reserve button
  * - Amenities list
  * - Policies (stay, cancellation, house rules)
  * - Host contact info
@@ -146,42 +145,6 @@ export default function DetailView() {
   const formatPrice = (price?: number): string => {
     if (!price) return '$0';
     return `$${price.toLocaleString()}`;
-  };
-
-  /**
-   * Handle reserve button click
-   */
-  const handleReserve = () => {
-    if (!listing) return;
-    if (!checkIn || !checkOut) {
-      trackEvent('reserve-validation-failed', {
-        listingId: id,
-        reason: 'missing-dates'
-      });
-      alert('Please select check-in and check-out dates');
-      return;
-    }
-    if (nights <= 0) {
-      trackEvent('reserve-validation-failed', {
-        listingId: id,
-        reason: 'invalid-dates'
-      });
-      alert('Check-out must be after check-in');
-      return;
-    }
-
-    const totalPrice = (listing.price ?? 0) * nights;
-    trackEvent('reserve-clicked', {
-      listingId: id,
-      title: listing.title?.substring(0, 100),
-      nights: nights,
-      pricePerNight: listing.price,
-      totalPrice: totalPrice,
-      checkIn: checkIn,
-      checkOut: checkOut
-    });
-
-    alert(`Booking request submitted for ${nights} nights. Total: ${formatPrice(totalPrice)}`);
   };
 
   /**
@@ -422,7 +385,7 @@ export default function DetailView() {
             </div>
           </div>
 
-          {/* Price & Reserve */}
+          {/* Price & Total */}
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-baseline gap-1">
@@ -435,13 +398,6 @@ export default function DetailView() {
                 </p>
               )}
             </div>
-            <button
-              onClick={handleReserve}
-              data-umami-event="reserve-clicked"
-              className="px-6 py-3 bg-app text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
-            >
-              Reserve
-            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 {
-    "version": "1.15.4",
+    "version": "1.15.5",
     "url": "https://stay.bixbyapps.com",
     "design": {
         "baseColor": "neutral",
@@ -24,9 +24,9 @@
                 "description": "Find stays by title, location or summary"
             },
             {
-                "icon": "map-pin",
-                "title": "Prime Locations",
-                "description": "Properties in the most desirable destinations"
+                "icon": "calendar",
+                "title": "Stay Totals",
+                "description": "Pick your dates to see the nights and total price"
             },
             {
                 "icon": "images",
@@ -51,7 +51,7 @@
             "interval": "monthly",
             "lookup_key": "bxstay_premium",
             "features": [
-                "Unlimited Listings",
+                "Unlimited Listing Views",
                 "Cancel Anytime"
             ]
         }
