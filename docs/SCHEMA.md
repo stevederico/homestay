@@ -109,13 +109,18 @@ CREATE TABLE Auths (
 
 ## Subscription Status Values
 
-| Status | Description |
-|--------|-------------|
-| `active` | Subscription is active and paid |
-| `canceled` | Canceled but access until period ends |
-| `past_due` | Payment failed, grace period |
-| `unpaid` | Payment failed, access revoked |
-| `trialing` | In trial period |
+| Status | Description | Paid access |
+|--------|-------------|-------------|
+| `active` | Subscription is active and paid | yes |
+| `trialing` | In trial period | yes |
+| `canceled` | Subscription ended | no |
+| `past_due` | Payment failed | no |
+| `unpaid` | Payment failed, access revoked | no |
+
+Paid access (`PAID_STATUSES` in `backend/src/routes.rs`) also needs
+`subscription.expires` to be in the future; a missing `expires` counts as not
+expired. Every other status (`incomplete`, `incomplete_expired`, `paused`, empty)
+is free.
 
 ---
 
@@ -126,7 +131,7 @@ Free users have a monthly usage limit (default: 20).
 - `usage.count` - Incremented on each tracked action
 - `usage.reset_at` - Set to 30 days after first action
 - When `now > reset_at`, counter resets to 0
-- Subscribers (`subscription.status === 'active'`) get unlimited usage
+- Subscribers (`subscription.status` `active` or `trialing`, not expired) get unlimited usage
 
 ---
 

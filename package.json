@@ -1,7 +1,7 @@
 {
   "name": "BXStay",
   "private": false,
-  "version": "1.15.5",
+  "version": "1.15.6",
   "skateboardVersion": "5.6.0",
   "type": "module",
   "scripts": {

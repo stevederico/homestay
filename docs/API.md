@@ -146,7 +146,7 @@ Update current user profile.
 ### Subscription
 
 #### GET /api/isSubscriber
-Check if current user has active subscription.
+Check if current user has a paid subscription (`active` or `trialing`, not expired).
 
 **Response (200):**
 ```json
@@ -336,7 +336,7 @@ curl -sS http://localhost:8000/api/listings
 
 Single listing. Requires auth (cookie). Gated by the Featured Host plan (`bxstay_premium`):
 
-- Subscribers (active, not expired): unlimited views
+- Subscribers (`active` or `trialing`, not expired): unlimited views
 - Free users: each successful view spends one unit of the same quota as `POST /api/usage` (`FREE_USAGE_LIMIT`, default 20, per 30-day window)
 - A missing listing (404) never spends a view
 

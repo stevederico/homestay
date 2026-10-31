@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+1.15.6
+
+  Trialing counts paid
+  Add status tests
+  Update paid docs
+
 1.15.5
 
   Remove reserve button

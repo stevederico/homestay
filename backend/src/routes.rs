@@ -749,8 +749,16 @@ fn resolve_usage(user: &User) -> Usage {
     })
 }
 
+/// Stripe subscription statuses that count as paid. A trial is paid access:
+/// trialing users get the same unlimited listing views as active ones.
+const PAID_STATUSES: &[&str] = &["active", "trialing"];
+
+/// Whether `sub` grants paid access: its status is in [`PAID_STATUSES`] and
+/// its period end (`expires`) is still in the future. A missing `expires`
+/// counts as not yet expired.
 fn is_subscriber(sub: &Subscription) -> bool {
-    sub.status == "active" && sub.expires.map(|e| e > config::now_secs()).unwrap_or(true)
+    PAID_STATUSES.contains(&sub.status.as_str())
+        && sub.expires.map(|e| e > config::now_secs()).unwrap_or(true)
 }
 
 fn sub_expires_iso(sub: &Subscription) -> Json {
@@ -2837,6 +2845,108 @@ mod tests {
         let res = handle(&state, check);
         assert_eq!(res.status, 200, "{}", String::from_utf8_lossy(&res.body));
         assert_eq!(json_body(&res).get_i64("remaining"), Some(0));
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    /// Give `email` a subscription with `status` and `expires`.
+    fn set_subscription(state: &AppState, email: &str, status: &str, expires: Option<i64>) {
+        let user = state
+            .pool
+            .find_user(&UserQuery::Email(email.into()))
+            .expect("query")
+            .expect("user");
+        let sub = Subscription {
+            stripe_id: "cus_status".into(),
+            expires,
+            status: status.into(),
+            subscription_id: Some("sub_status".into()),
+        };
+        state
+            .pool
+            .update_user_subscription(&user.id, &sub)
+            .expect("set subscription");
+    }
+
+    /// POST `/api/usage` `{"operation":"check"}` and return the body's `isSubscriber`.
+    fn usage_check_is_subscriber(state: &AppState, signup: &Response) -> Option<bool> {
+        let mut check = Request::for_test("POST", "/api/usage");
+        cookie_header(&mut check, signup);
+        check.set_test_body(br#"{"operation":"check"}"#.to_vec());
+        let res = handle(state, check);
+        assert_eq!(res.status, 200, "{}", String::from_utf8_lossy(&res.body));
+        match json_body(&res).get("isSubscriber") {
+            Some(Json::Bool(b)) => Some(*b),
+            _ => None,
+        }
+    }
+
+    #[test]
+    fn paid_statuses_are_active_and_trialing_within_the_period() {
+        let now = config::now_secs();
+        let sub = |status: &str, expires: Option<i64>| Subscription {
+            stripe_id: "cus_t".into(),
+            expires,
+            status: status.into(),
+            subscription_id: None,
+        };
+        let cases: &[(&str, Option<i64>, bool)] = &[
+            ("active", Some(now + 3600), true),
+            ("trialing", Some(now + 3600), true),
+            ("trialing", None, true),
+            ("trialing", Some(now - 60), false),
+            ("past_due", Some(now + 3600), false),
+            ("canceled", Some(now + 3600), false),
+            ("incomplete", Some(now + 3600), false),
+            ("incomplete_expired", Some(now + 3600), false),
+            ("unpaid", Some(now + 3600), false),
+            ("paused", Some(now + 3600), false),
+            ("", Some(now + 3600), false),
+        ];
+        let wrong: Vec<_> = cases
+            .iter()
+            .filter(|(status, expires, want)| is_subscriber(&sub(status, *expires)) != *want)
+            .collect();
+        assert!(wrong.is_empty(), "wrong verdicts: {wrong:?}");
+    }
+
+    #[test]
+    fn usage_check_reports_trialing_as_a_subscriber() {
+        let (state, dir) = test_state();
+        let signup = signed_up(&state, "trial@example.com");
+        let later = Some(config::now_secs() + 3600);
+        set_subscription(&state, "trial@example.com", "trialing", later);
+        assert_eq!(usage_check_is_subscriber(&state, &signup), Some(true));
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn usage_check_reports_past_due_and_canceled_as_free() {
+        let (state, dir) = test_state();
+        let signup = signed_up(&state, "lapsed2@example.com");
+        let later = Some(config::now_secs() + 3600);
+        let verdicts: Vec<Option<bool>> = ["past_due", "canceled"]
+            .iter()
+            .map(|status| {
+                set_subscription(&state, "lapsed2@example.com", status, later);
+                usage_check_is_subscriber(&state, &signup)
+            })
+            .collect();
+        assert_eq!(verdicts, vec![Some(false), Some(false)]);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn trialing_user_views_listings_past_the_free_limit() {
+        let (mut state, dir) = test_state();
+        state.free_usage_limit = 1;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "trialview@example.com");
+        let later = Some(config::now_secs() + 3600);
+        set_subscription(&state, "trialview@example.com", "trialing", later);
+        let statuses: Vec<u16> = (0..3)
+            .map(|_| listing_request(&state, &signup, "old").status)
+            .collect();
+        assert_eq!(statuses, vec![200, 200, 200]);
         std::fs::remove_dir_all(&dir).ok();
     }
 }

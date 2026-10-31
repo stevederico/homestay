@@ -2,7 +2,7 @@
 
 Stay listings app. Browse vacation stays, open a listing, pick dates, see the total price.
 
-**Version:** 1.15.5 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
+**Version:** 1.15.6 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
 
 ## Tech Stack
 
