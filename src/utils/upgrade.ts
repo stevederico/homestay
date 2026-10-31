@@ -1,6 +1,6 @@
 /**
  * HTTP status the backend answers when a free user has spent the free tier
- * and the route needs the Verified Host plan.
+ * and the route needs the Featured Host plan.
  */
 export const UPGRADE_REQUIRED_STATUS = 402;
 

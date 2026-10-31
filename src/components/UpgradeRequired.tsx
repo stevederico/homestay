@@ -9,7 +9,7 @@ import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyCont
 
 /**
  * Empty state shown when the backend answers 402 for a listing: the free
- * listing views are spent. Opens the Verified Host UpgradeSheet (Stripe
+ * listing views are spent. Opens the Featured Host UpgradeSheet (Stripe
  * checkout for the first `stripeProducts` entry) or returns to the grid.
  *
  * @component
@@ -29,7 +29,7 @@ export default function UpgradeRequired() {
         <EmptyHeader>
           <EmptyMedia variant="icon"><Lock size={24} /></EmptyMedia>
           <EmptyTitle className="text-balance">You've used your free listing views</EmptyTitle>
-          <EmptyDescription>Upgrade to Verified Host for unlimited listings.</EmptyDescription>
+          <EmptyDescription>Upgrade to Featured Host for unlimited listings.</EmptyDescription>
         </EmptyHeader>
         <EmptyContent className="flex-row justify-center gap-2">
           <Button onClick={handleUpgrade}>Upgrade</Button>

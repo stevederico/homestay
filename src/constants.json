@@ -1,5 +1,5 @@
 {
-    "version": "1.15.2",
+    "version": "1.15.3",
     "url": "https://stay.bixbyapps.com",
     "design": {
         "baseColor": "neutral",
@@ -19,9 +19,9 @@
         "title": "Why Choose BXStay",
         "items": [
             {
-                "icon": "house",
-                "title": "Verified Properties",
-                "description": "All listings are verified for quality and accuracy"
+                "icon": "search",
+                "title": "Easy Search",
+                "description": "Find stays by title, location or summary"
             },
             {
                 "icon": "map-pin",
@@ -47,7 +47,7 @@
     "stripeProducts": [
         {
             "price": "$19.00",
-            "title": "Verified Host",
+            "title": "Featured Host",
             "interval": "monthly",
             "lookup_key": "bxstay_premium",
             "features": [

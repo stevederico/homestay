@@ -165,7 +165,7 @@ fn listings_list(state: &AppState) -> Response {
     }
 }
 
-/// GET /api/listings/:id — single listing, gated by the Verified Host plan.
+/// GET /api/listings/:id — single listing, gated by the Featured Host plan.
 ///
 /// Signed-in only (401 otherwise). Subscribers get unlimited views; a free
 /// user spends one unit of the shared free-tier quota (`FREE_USAGE_LIMIT` per
@@ -764,7 +764,7 @@ fn sub_expires_iso(sub: &Subscription) -> Json {
 const USAGE_WINDOW_SECS: i64 = 30 * 24 * 60 * 60;
 
 /// What the 402 from a gated route tells a free user to do.
-const LISTINGS_UPGRADE_MSG: &str = "Upgrade to Verified Host for unlimited listings";
+const LISTINGS_UPGRADE_MSG: &str = "Upgrade to Featured Host for unlimited listings";
 
 /// The 402 body returned when a free user has spent the free listing views.
 fn upgrade_required(limit: i64) -> Response {
@@ -2758,7 +2758,7 @@ mod tests {
         let body = json_body(&blocked);
         assert_eq!(
             body.get_str("error"),
-            Some("Upgrade to Verified Host for unlimited listings")
+            Some("Upgrade to Featured Host for unlimited listings")
         );
         assert_eq!(body.get_i64("total"), Some(2));
         std::fs::remove_dir_all(&dir).ok();

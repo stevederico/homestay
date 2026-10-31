@@ -39,7 +39,7 @@ node backend/scripts/seed-listings.mjs
 ## API
 
 - `GET /api/listings` — public catalog, newest first
-- `GET /api/listings/:id` — single listing; signed-in only. Free users get `FREE_USAGE_LIMIT` (default 20) listing views per 30 days, then 402 and an upgrade prompt. Verified Host ($19/mo, `bxstay_premium`) is unlimited
+- `GET /api/listings/:id` — single listing; signed-in only. Free users get `FREE_USAGE_LIMIT` (default 20) listing views per 30 days, then 402 and an upgrade prompt. Featured Host ($19/mo, `bxstay_premium`) is unlimited
 
 ---
 

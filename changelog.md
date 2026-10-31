@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+1.15.3
+
+  Rename Featured Host
+  Drop verified claim
+
 1.15.2
 
   Rename plan title

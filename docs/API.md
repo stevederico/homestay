@@ -334,7 +334,7 @@ curl -sS http://localhost:8000/api/listings
 
 #### GET /api/listings/:id
 
-Single listing. Requires auth (cookie). Gated by the Verified Host plan (`bxstay_premium`):
+Single listing. Requires auth (cookie). Gated by the Featured Host plan (`bxstay_premium`):
 
 - Subscribers (active, not expired): unlimited views
 - Free users: each successful view spends one unit of the same quota as `POST /api/usage` (`FREE_USAGE_LIMIT`, default 20, per 30-day window)
@@ -350,7 +350,7 @@ curl -sS -b cookies.txt http://localhost:8000/api/listings/64f1a2b3c4d5e6f7a8b9c
 
 **Error (402):** free views spent
 ```json
-{ "error": "Upgrade to Verified Host for unlimited listings", "remaining": 0, "total": 20, "isSubscriber": false }
+{ "error": "Upgrade to Featured Host for unlimited listings", "remaining": 0, "total": 20, "isSubscriber": false }
 ```
 
 **Error (404):** listing missing or catalog unseeded
