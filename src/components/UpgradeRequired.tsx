@@ -9,7 +9,7 @@ import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyCont
 
 /**
  * Empty state shown when the backend answers 402 for a listing: the free
- * listing views are spent. Opens the Premium Host UpgradeSheet (Stripe
+ * listing views are spent. Opens the Verified Host UpgradeSheet (Stripe
  * checkout for the first `stripeProducts` entry) or returns to the grid.
  *
  * @component

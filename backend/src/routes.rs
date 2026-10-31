@@ -165,7 +165,7 @@ fn listings_list(state: &AppState) -> Response {
     }
 }
 
-/// GET /api/listings/:id — single listing, gated by the Premium Host plan.
+/// GET /api/listings/:id — single listing, gated by the Verified Host plan.
 ///
 /// Signed-in only (401 otherwise). Subscribers get unlimited views; a free
 /// user spends one unit of the shared free-tier quota (`FREE_USAGE_LIMIT` per

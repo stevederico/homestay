@@ -1,5 +1,5 @@
 {
-    "version": "1.14.0",
+    "version": "1.15.2",
     "url": "https://stay.bixbyapps.com",
     "design": {
         "baseColor": "neutral",
@@ -47,7 +47,7 @@
     "stripeProducts": [
         {
             "price": "$19.00",
-            "title": "Premium Host",
+            "title": "Verified Host",
             "interval": "monthly",
             "lookup_key": "bxstay_premium",
             "features": [

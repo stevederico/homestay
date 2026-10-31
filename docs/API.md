@@ -334,7 +334,7 @@ curl -sS http://localhost:8000/api/listings
 
 #### GET /api/listings/:id
 
-Single listing. Requires auth (cookie). Gated by the Premium Host plan (`bxstay_premium`):
+Single listing. Requires auth (cookie). Gated by the Verified Host plan (`bxstay_premium`):
 
 - Subscribers (active, not expired): unlimited views
 - Free users: each successful view spends one unit of the same quota as `POST /api/usage` (`FREE_USAGE_LIMIT`, default 20, per 30-day window)

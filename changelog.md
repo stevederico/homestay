@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.15.2
+
+  Rename plan title
+
 1.15.1
 
   Rename guest upgrade copy
