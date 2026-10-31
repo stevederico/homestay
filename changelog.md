@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+1.15.7
+
+  Remove isSubscriber route doc
+  Point to usage check
+
 1.15.6
 
   Trialing counts paid
