@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+1.15.0
+
+  Fix libSQL transactions
+  Pin base images
+
 1.14.0
 
   Gate listing detail
