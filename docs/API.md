@@ -350,7 +350,7 @@ curl -sS -b cookies.txt http://localhost:8000/api/listings/64f1a2b3c4d5e6f7a8b9c
 
 **Error (402):** free views spent
 ```json
-{ "error": "Upgrade to Premium Host for unlimited listings", "remaining": 0, "total": 20, "isSubscriber": false }
+{ "error": "Upgrade to Verified Host for unlimited listings", "remaining": 0, "total": 20, "isSubscriber": false }
 ```
 
 **Error (404):** listing missing or catalog unseeded

@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.15.1
+
+  Rename guest upgrade copy
+
 1.15.0
 
   Fix libSQL transactions

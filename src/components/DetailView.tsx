@@ -213,7 +213,7 @@ export default function DetailView() {
   if (isLocked) {
     return (
       <>
-        <Header title="Premium Host">
+        <Header title="Verified Host">
           <button onClick={() => navigate(-1)} aria-label="Go back" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             <ChevronLeft size={18} /> Back
           </button>

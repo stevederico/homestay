@@ -764,7 +764,7 @@ fn sub_expires_iso(sub: &Subscription) -> Json {
 const USAGE_WINDOW_SECS: i64 = 30 * 24 * 60 * 60;
 
 /// What the 402 from a gated route tells a free user to do.
-const LISTINGS_UPGRADE_MSG: &str = "Upgrade to Premium Host for unlimited listings";
+const LISTINGS_UPGRADE_MSG: &str = "Upgrade to Verified Host for unlimited listings";
 
 /// The 402 body returned when a free user has spent the free listing views.
 fn upgrade_required(limit: i64) -> Response {
@@ -2756,7 +2756,10 @@ mod tests {
         let blocked = listing_request(&state, &signup, "old");
         assert_eq!(blocked.status, 402);
         let body = json_body(&blocked);
-        assert_eq!(body.get_str("error"), Some(LISTINGS_UPGRADE_MSG));
+        assert_eq!(
+            body.get_str("error"),
+            Some("Upgrade to Verified Host for unlimited listings")
+        );
         assert_eq!(body.get_i64("total"), Some(2));
         std::fs::remove_dir_all(&dir).ok();
     }

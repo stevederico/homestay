@@ -29,7 +29,7 @@ export default function UpgradeRequired() {
         <EmptyHeader>
           <EmptyMedia variant="icon"><Lock size={24} /></EmptyMedia>
           <EmptyTitle className="text-balance">You've used your free listing views</EmptyTitle>
-          <EmptyDescription>Upgrade to Premium Host for unlimited listings.</EmptyDescription>
+          <EmptyDescription>Upgrade to Verified Host for unlimited listings.</EmptyDescription>
         </EmptyHeader>
         <EmptyContent className="flex-row justify-center gap-2">
           <Button onClick={handleUpgrade}>Upgrade</Button>
