@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+1.17.0
+
+  Rename README to HomeStay
+  Sharpen description
+
 1.16.0
 
   Example test email

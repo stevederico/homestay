@@ -1,8 +1,8 @@
-# BXStay
+# HomeStay
 
-Stay listings app. Browse vacation stays, open a listing, pick dates, see the total price.
+Vacation stays without the booking fees. Browse listings, open one, pick dates, and see the full price up front.
 
-**Version:** 1.15.8 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
+**Version:** 1.17.0 | **Domain:** [stay.bixbyapps.com](https://stay.bixbyapps.com)
 
 ## Tech Stack
 
