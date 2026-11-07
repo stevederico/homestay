@@ -124,7 +124,7 @@ mod tests {
 
     #[test]
     fn accepts_ordinary_emails() {
-        for e in ["a@b.co", "steve@bixbyapps.com", "first.last+tag@sub.example.org", "x1@y-z.io"] {
+        for e in ["a@b.co", "jane@example.com", "first.last+tag@sub.example.org", "x1@y-z.io"] {
             assert!(validate_email(e), "should accept {e}");
         }
     }
