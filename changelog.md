@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.17.1
+
+  Bump debian runtime base to bookworm-20261104-slim (apt 2.6.2)
+
 1.17.0
 
   Rename README to HomeStay
