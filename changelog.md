@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+1.19.0
+
+  Drop @types/node
+
 1.18.0
 
   Bump skateboard-ui 5.19.0
