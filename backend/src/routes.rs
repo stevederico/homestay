@@ -2808,6 +2808,40 @@ mod tests {
     }
 
     #[test]
+    fn signed_checkout_webhook_unlocks_a_blocked_free_user() {
+        let mut mock = crate::stripe::StripeMock::default();
+        mock.subscriptions.insert(
+            "sub_unlock".into(),
+            r#"{"id":"sub_unlock","status":"active","current_period_end":4102444800}"#.into(),
+        );
+        let (mut state, dir) = stripe_state_with_mock(mock);
+        state.free_usage_limit = 1;
+        seed_listings(&dir);
+        let signup = signed_up(&state, "buyer@example.com");
+        assert_eq!(listing_request(&state, &signup, "old").status, 200);
+        assert_eq!(listing_request(&state, &signup, "old").status, 402);
+
+        let payload = br#"{
+            "id":"evt_unlock",
+            "type":"checkout.session.completed",
+            "data":{"object":{
+                "customer":"cus_unlock",
+                "customer_email":"buyer@example.com",
+                "subscription":"sub_unlock"
+            }}
+        }"#;
+        let res = handle(&state, signed_webhook(payload));
+        assert_eq!(res.status, 200, "{}", String::from_utf8_lossy(&res.body));
+
+        // Same session cookies: the buyer now views past the free limit.
+        let statuses: Vec<u16> = (0..3)
+            .map(|_| listing_request(&state, &signup, "old").status)
+            .collect();
+        assert_eq!(statuses, vec![200, 200, 200]);
+        std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
     fn expired_subscriber_falls_back_to_the_free_limit() {
         let (mut state, dir) = test_state();
         state.free_usage_limit = 0;
