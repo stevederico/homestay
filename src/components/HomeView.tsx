@@ -1,8 +1,8 @@
 import Header from '@stevederico/skateboard-ui/Header';
-import { Search, Home, Image, Bed, Bath, Square } from 'lucide-react';
+import { Search, Home, Image, Bed, Bath, Square } from '@stevederico/skateboard-ui/icons';
 import { useEffect, useState } from "react";
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
-import { Link } from 'react-router';
+import { Link } from '@stevederico/skateboard-ui/router';
 import { trackEvent } from '../utils/analytics';
 
 /** A stay listing as returned by the /listings endpoint. */

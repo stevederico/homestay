@@ -1,11 +1,11 @@
 import { useRef } from 'react';
-import { Lock } from 'lucide-react';
+import { Lock } from '@stevederico/skateboard-ui/icons';
 import { useUser } from '@stevederico/skateboard-ui/Context';
 import { useSafeNavigate } from '@stevederico/skateboard-ui/Utilities';
 import UpgradeSheet from '@stevederico/skateboard-ui/UpgradeSheet';
 import type { UpgradeSheetHandle } from '@stevederico/skateboard-ui/UpgradeSheet';
-import { Button } from '@stevederico/skateboard-ui/shadcn/ui/button';
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from '@stevederico/skateboard-ui/shadcn/ui/empty';
+import { Button } from '@stevederico/skateboard-ui/ui/button';
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from '@stevederico/skateboard-ui/ui/empty';
 
 /**
  * Empty state shown when the backend answers 402 for a listing: the free

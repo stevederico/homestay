@@ -1,7 +1,7 @@
 import Header from '@stevederico/skateboard-ui/Header';
-import { ChevronLeft, AlertCircle, Image, MapPin, Bed, Bath, Square, Check, User } from 'lucide-react';
+import { ChevronLeft, AlertCircle, Image, MapPin, Bed, Bath, Square, Check, User } from '@stevederico/skateboard-ui/icons';
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate } from '@stevederico/skateboard-ui/router';
 import { apiRequest } from '@stevederico/skateboard-ui/Utilities';
 import { trackEvent } from '../utils/analytics';
 import { isUpgradeRequired } from '../utils/upgrade';

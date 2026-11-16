@@ -6,7 +6,7 @@ Vacation stays without the booking fees. Browse listings, open one, pick dates, 
 
 ## Tech Stack
 
-- React 19, Vite 8, skateboard 5.6.0, skateboard-ui 5.11.0
+- React 19, Vite 8, skateboard 5.6.0, skateboard-ui 5.19.0
 - Zero-crate Rust backend, SQLite (auth + a separate read-only listings catalog)
 - Tailwind CSS v4
 

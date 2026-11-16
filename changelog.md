@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+1.18.0
+
+  Bump skateboard-ui 5.19.0
+  Icons from skateboard-ui
+  Router from skateboard-ui
+  Rewrite shadcn imports
+  Plain CSS
+  Drop Tailwind
+  Drop lucide-react
+  Drop react-router
+
 1.17.3
 
   Live check notes

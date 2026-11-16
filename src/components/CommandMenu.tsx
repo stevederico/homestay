@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from '@stevederico/skateboard-ui/router';
 import { getState } from '@stevederico/skateboard-ui/Context';
 import {
   Command,
@@ -9,8 +9,8 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-} from '@stevederico/skateboard-ui/shadcn/ui/command';
-import { House } from 'lucide-react';
+} from '@stevederico/skateboard-ui/ui/command';
+import { House } from '@stevederico/skateboard-ui/icons';
 
 /** Page entry from constants.json's pages array. */
 interface PageEntry {
